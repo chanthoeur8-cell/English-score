@@ -677,6 +677,8 @@ function getCriteriaForClass(className){
   if(isLevel){
     // Quiz → Computer for Level classes
     base[2].name = 'Computer';
+    //Assignment → Quiz&Assignment for Level classes
+    base[3].name = 'Quiz&Assignment';
   }
   if(isNursery){
     // Remove Chinese for Nursery
