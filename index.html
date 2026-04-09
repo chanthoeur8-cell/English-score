@@ -286,7 +286,7 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
       <th style="min-width:44px;font-size:7pt;">Speaking<br>/100%</th>
       <th style="min-width:44px;font-size:7pt;">Life Skills<br>/100%</th>
       <th style="min-width:44px;font-size:7pt;">Chinese<br>/100%</th>
-      <th style="min-width:70px;font-size:7pt;background:#7c3aed;color:white;">Report Card</th>
+      <th style="min-width:70px;font-size:7pt;background:#7c3aed;color:white;">Photo</th>
     </tr>
   </thead><tbody id="en-monthBody"></tbody></table>
   </div>
@@ -658,7 +658,7 @@ function enLoadMonthly(){
       <td><input class="in-name" type="text" value="${s.name}"></td>
       <td>${s.sex}</td>
       ${RC_CRITERIA.map(()=>`<td><input type="number" class="sc-inp sc en-sc" min="0" max="100" step="0.1" placeholder="" style="width:48px;"></td>`).join('')}
-      <td><button class="rc-btn-row" onclick="rcOpenModal(${i})">📄 Report Card</button></td>
+      <td style="text-align:center;"><input type="file" accept="image/*" onchange="previewImg(event,'en-img${i}')" style="width:80px;display:block;margin:0 auto;font-size:7pt;"><input type="hidden" id="en-img${i}"></td>
     </tr>`;
   });
   loadData('en','month',enSel.value);attachAutoSave('en','month',enSel.value);
@@ -687,8 +687,8 @@ function getCriteriaForClass(className){
   if(isLevel){
     // Quiz → Computer for Level classes
     base[2].name = 'Computer';
-    //Assignment → Assignment&Quiz  for Level classes
-    base[2].name = 'Assignment&Quiz';
+    //Assignment → Assignment&Quiz for Level classes
+    base[3].name = 'Assignment&Quiz';
   }
   if(isNursery){
     // Remove Chinese for Nursery
