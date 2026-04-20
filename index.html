@@ -257,11 +257,11 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
     <div><label>Select Class</label>
       <select id="en-classSelect" onchange="enOnClassChange()">
         <option value="">-- Choose a Class --</option>
-        <option>Fount1 Morning</option><option>Fount1 Evening</option>
-        <option>Fount2 Morning</option><option>Fount2 Afternoon</option>
+        <option>Found1 Morning</option><option>Found1 Evening</option>
+        <option>Found2 Morning</option><option>Found2 Afternoon</option>
         <option>Nursery Morning</option><option>Nursery Afternoon</option>
         <option>Level1 Morning</option><option>Level1 Afternoon</option>
-        <option>Level 2</option>
+        <option>Level2 Afternoon</option>
       </select>
     </div>
     <div><label id="en-period-label">Month / Term</label><input type="text" id="en-monthInput" value="January"></div>
@@ -1296,15 +1296,15 @@ function rcGrade(avg10){
 }
 
 const classInfo={
-  'Fount1 Morning':   {level:'Fount 1',        room:'Fount1',  time:'Morning'},
-  'Fount1 Evening':   {level:'Fount 1',        room:'Fount1',  time:'Evening'},
+  'Found1 Morning':   {level:'Fount 1',        room:'Found1',  time:'Morning'},
+  'Found1 Evening':   {level:'Fount 1',        room:'Found1',  time:'Evening'},
   'Fount2 Morning':   {level:'Fount 2',        room:'Fount2',  time:'Morning'},
   'Fount2 Afternoon': {level:'Fount 2',        room:'Fount2',  time:'Afternoon'},
   'Nursery Morning':  {level:'Nursery',        room:'Nursery', time:'Morning'},
   'Nursery Afternoon':{level:'Nursery',        room:'Nursery', time:'Afternoon'},
   'Level1 Morning':   {level:'Level 1 Book A', room:'L1',      time:'Morning'},
   'Level1 Afternoon': {level:'Level 1 Book A', room:'L1',      time:'Afternoon'},
-  'Level 2':          {level:'Level 2',        room:'L2',      time:'Morning'},
+  'Level2 Afternoon': {level:'Level 2',        room:'L2',      time:'Afternoon'},
 };
 
 function buildReportCard(s,rank,term,year,className,teacherName){
