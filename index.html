@@ -794,10 +794,12 @@ function getCriteriaForClass(className){
     base[3].name = 'Assignment&Quiz';
   }
   if(isNursery){
-    // Chinese  →Numeracy
+    //Quiz → Quiz&Assignment
+    base[2].name = 'Quiz&Assignment'; 
+    // Chinese → Numeracy
     base[9].name = 'Numeracy';
-    //Assignment  → Assignment&Science
-    base[3].name = 'Assignment&Science';
+    //Assignment  → Science
+    base[3].name = 'Science';
     //Mix Skills → Literacy
     base[5].name = 'Literacy';
     
