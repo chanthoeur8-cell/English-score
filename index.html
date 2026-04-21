@@ -794,8 +794,13 @@ function getCriteriaForClass(className){
     base[3].name = 'Assignment&Quiz';
   }
   if(isNursery){
-    // Remove Chinese for Nursery
-    return base.filter(c=>c.idx!==9);
+    // Chinese  →Numeracy
+    base[9].name = 'Numeracy';
+    //Assignment  → Assignment&Science
+    base[3].name = 'Assignment&Science';
+    //Mix Skills → Literacy
+    base[5].name = 'Literacy';
+    
   }
   return base;
 }
