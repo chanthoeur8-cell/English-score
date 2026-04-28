@@ -1348,7 +1348,6 @@ function enDownloadRC(){
     wrap.style.cssText='position:fixed;top:-9999px;left:0;width:794px;background:white;display:block;visibility:visible;opacity:1;z-index:-1;pointer-events:none;';
     const clone=card.cloneNode(true);
     clone.style.pageBreakAfter='auto';clone.style.width='794px';
-    // Replace external logo URLs with base64
     if(LOGO_B64){
       clone.querySelectorAll('img').forEach(img=>{
         if(img.src&&img.src.includes('ibb.co'))img.src=LOGO_B64;
@@ -1360,14 +1359,23 @@ function enDownloadRC(){
     const proceed=()=>{
       if(loaded<imgs.length)return;
       setTimeout(()=>{
-        html2canvas(wrap,{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#ffffff',logging:false,width:element.scrollWidth,windowWidth:794,imageTimeout:12000}).then(canvas=>{
+        html2canvas(wrap,{
+          scale:1.5,
+          useCORS:true,
+          allowTaint:true,
+          backgroundColor:'#ffffff',
+          logging:false,
+          width:794,
+          windowWidth:794,
+          imageTimeout:8000
+        }).then(canvas=>{
           document.body.removeChild(wrap);
           const mpp=A4W/canvas.width;
           const imgH=canvas.height*mpp;
           if(pageIdx>0)pdf.addPage();
           if(imgH<=A4H+2){
             const safeH=Math.max(1,+(imgH.toFixed(2)));
-            pdf.addImage(canvas.toDataURL('image/jpeg',0,92),'JPEG',0,0,A4W,safeH);
+            pdf.addImage(canvas.toDataURL('image/jpeg',.92),'JPEG',0,0,A4W,safeH);
           } else {
             let yRC=0,firstRC=true;
             while(yRC<canvas.height){
@@ -1387,14 +1395,14 @@ function enDownloadRC(){
           if(document.body.contains(wrap))document.body.removeChild(wrap);
           console.error('Card render error:',err);pageIdx++;renderCard(idx+1);
         });
-      },200);
+      },150);
     };
-    if(!imgs.length){setTimeout(proceed,300);return;}
+    if(!imgs.length){setTimeout(proceed,200);return;}
     imgs.forEach(img=>{
       if(img.complete&&img.naturalWidth>0){loaded++;proceed();}
       else{img.onload=()=>{loaded++;proceed();};img.onerror=()=>{loaded++;proceed();};}
     });
-    setTimeout(()=>{if(loaded<imgs.length){loaded=imgs.length;proceed();}},5000);
+    setTimeout(()=>{if(loaded<imgs.length){loaded=imgs.length;proceed();}},4000);
   }
   renderCard(0);
 }
