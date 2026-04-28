@@ -71,10 +71,6 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
 .rc-btn-row:hover{background:#6d28d9;}
 .pdf-wrap{display:none;width:210mm;background:white!important;margin:20px auto 0;border:1px solid #ddd;border-radius:4px;}
 .page-frame{padding:7mm;box-sizing:border-box;}
-.doc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1mm;}
-.hd-logo img{width:190px;height:auto;}
-.hd-nation-kh{text-align:center;font-family:'Moul',serif;font-size:14pt;line-height:1.6;}
-.hd-nation-en{text-align:center;font-family:'Playfair Display',serif;font-size:13pt;font-weight:700;line-height:1.5;color:#1e293b;}
 .rpt-tbl{width:100%;border-collapse:collapse;font-size:9.5pt;margin-top:8px;}
 .rpt-tbl th,.rpt-tbl td{border:1px solid black!important;padding:5px 6px;text-align:center;}
 .rpt-tbl th{background:#f1f5f9!important;font-weight:700;font-size:9pt;}
@@ -115,16 +111,24 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
 .rc-photo-preview{width:70px;height:88px;border:2px dashed var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#f8fafc;flex-shrink:0;}
 .rc-photo-preview img{width:100%;height:100%;object-fit:cover;}
 .rc-modal-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;padding:16px 24px;border-top:1px solid var(--border);background:#f8fafc;}
+
+/* ── PRINT STYLES ── */
 @media print{
-  body{background:white;}
-  .app-header,.ctrl-card,.pdf-wrap~*,#rc-modal{display:none!important;}
-  .pdf-wrap{display:block!important;border:none;}
+  body>*:not(#print-area){display:none!important;}
+  #print-area{display:block!important;margin:0;padding:0;}
+  #print-area .print-page{page-break-after:always;width:210mm;min-height:277mm;background:white;padding:7mm;box-sizing:border-box;}
+  #print-area .print-page:last-child{page-break-after:auto;}
+  @page{size:A4 portrait;margin:0;}
 }
+#print-area{display:none;}
+
 #en-rc-content > div{border-bottom:3px dashed #cbd5e1;margin-bottom:20px;}
 #en-rc-content{background:#e2e8f0;padding:20px 0;}
 </style>
 </head>
 <body>
+
+<div id="print-area"></div>
 
 <div class="app-header">
   <div class="app-header-top">
@@ -215,7 +219,7 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
 </div>
 <div id="kh-pdf-content" class="pdf-wrap"></div>
 <div style="text-align:center;">
-  <button id="kh-downloadBtn" class="btn btn-green btn-dl" onclick="khDownloadPDF()">📥 ទាញយក PDF</button>
+  <button id="kh-downloadBtn" class="btn btn-green btn-dl" onclick="printDoc('kh-pdf-content')">🖨️ Print / Save PDF</button>
 </div>
 </div>
 </div>
@@ -298,8 +302,8 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
 <div id="en-pdf-content" class="pdf-wrap"></div>
 <div id="en-rc-content" style="display:none;overflow:hidden;"></div>
 <div style="text-align:center;">
-  <button id="en-downloadBtn" class="btn btn-green btn-dl" onclick="enDownloadPDF()">📥 Download PDF</button>
-  <button id="en-downloadRcBtn" class="btn btn-dl" style="background:#b45309;color:white;display:none;" onclick="enDownloadRC()">📥 Download Report Cards PDF</button>
+  <button id="en-downloadBtn" class="btn btn-green btn-dl" onclick="printDoc('en-pdf-content')">🖨️ Print / Save PDF</button>
+  <button id="en-downloadRcBtn" class="btn btn-dl" style="background:#b45309;color:white;display:none;" onclick="printReportCards()">🖨️ Print Report Cards</button>
 </div>
 </div>
 </div>
@@ -353,7 +357,7 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
   <div style="max-width:1500px;margin:0 auto;padding:0 20px;">
     <div id="rc-pdf-content" class="pdf-wrap" style="margin-top:16px;"></div>
     <div style="text-align:center;margin-top:12px;margin-bottom:30px;">
-      <button class="btn btn-purple" onclick="rcDownloadPDF()" id="rc-dl-btn">📥 Download Report Card PDF</button>
+      <button class="btn btn-purple" onclick="printDoc('rc-pdf-content')" id="rc-dl-btn">🖨️ Print Report Card</button>
       <button class="btn" style="background:#64748b;color:white;" onclick="document.getElementById('rc-pdf-area').style.display='none'">✕ Close</button>
     </div>
   </div>
@@ -361,7 +365,7 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
 
 <script>
 // ═══════════════════════════════════════════════════
-// LOGO PRELOADER — converts external logo to base64 for pdf rendering
+// LOGO PRELOADER
 // ═══════════════════════════════════════════════════
 let LOGO_B64 = '';
 (function preloadLogo(){
@@ -379,10 +383,7 @@ let LOGO_B64 = '';
   img.src = 'https://i.ibb.co/RTWkghgd/Logo-Mikid-removebg-preview.png';
 })();
 
-// ═══════════════════════════════════════════════════
-// CONSTANTS & CREST (base64 embedded)
-// ═══════════════════════════════════════════════════
-const CREST_B64='data:image/png;base64,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';
+const CREST_B64='data:image/png;base64,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';
 
 const RC_CRITERIA=[
   {no:1,name:'Attendance',std:10,col:0},{no:2,name:'Homework',std:10,col:1},
@@ -391,6 +392,49 @@ const RC_CRITERIA=[
   {no:7,name:'Listening',std:10,col:6},{no:8,name:'Speaking',std:10,col:7},
   {no:9,name:'Life Skills',std:10,col:8},{no:10,name:'Chinese',std:10,col:9}
 ];
+
+// ═══════════════════════════════════════════════════
+// FAST PRINT-BASED PDF (replaces slow html2canvas)
+// ═══════════════════════════════════════════════════
+function printDoc(contentId) {
+  const el = document.getElementById(contentId);
+  if (!el || !el.innerHTML.trim()) { alert('Please generate a report first!'); return; }
+  const printArea = document.getElementById('print-area');
+  const clone = el.cloneNode(true);
+  clone.className = 'print-page';
+  clone.style.display = 'block';
+  clone.style.width = '210mm';
+  // Replace any ibb.co logos with base64 to avoid CORS in print
+  if (LOGO_B64) {
+    clone.querySelectorAll('img').forEach(img => {
+      if (img.src && img.src.includes('ibb.co')) img.src = LOGO_B64;
+    });
+  }
+  printArea.innerHTML = '';
+  printArea.appendChild(clone);
+  setTimeout(() => { window.print(); }, 200);
+}
+
+function printReportCards() {
+  const container = document.getElementById('en-rc-content');
+  if (!container || !container.innerHTML.trim()) { alert('Please generate report cards first!'); return; }
+  const printArea = document.getElementById('print-area');
+  printArea.innerHTML = '';
+  const cards = Array.from(container.querySelectorAll('div[style*="page-break-after"]'));
+  if (!cards.length) { printDoc('en-rc-content'); return; }
+  cards.forEach(card => {
+    const clone = card.cloneNode(true);
+    clone.className = 'print-page';
+    clone.style.pageBreakAfter = 'always';
+    if (LOGO_B64) {
+      clone.querySelectorAll('img').forEach(img => {
+        if (img.src && img.src.includes('ibb.co')) img.src = LOGO_B64;
+      });
+    }
+    printArea.appendChild(clone);
+  });
+  setTimeout(() => { window.print(); }, 300);
+}
 
 // ═══════════════════════════════════════════════════
 // GRADE HELPERS
@@ -550,6 +594,7 @@ const khStudentDB={
   'មត្ដេយ្យកម្រិតទាប(ព្រឹក)':[{id:'147',name:'សុភក្រ វីរបុត្រ',sex:'M'},{id:'166',name:'លីណា រ័ត្នហុងស័ក្កិ',sex:'M'},{id:'160',name:'ថូ សិទ្ធីយូណា',sex:'F'},{id:'175',name:'សុគន្ធ បញ្ញាស័ក',sex:'M'},{id:'000',name:'សុីម សរឧត្តម',sex:'M'},{id:'000',name:'និត សុធារាជ',sex:'M'},{id:'000',name:'វ៉េត នីរីតា',sex:'F'}],
   'មត្ដេយ្យកម្រិតទាប(រសៀល)':[{id:'175',name:'ហេង ជ័រមុីង',sex:'F'},{id:'000',name:'សាយ សុខហេង',sex:'M'},{id:'181',name:'ឈន ចេស្ដា',sex:'M'},{id:'000',name:'លាង លក្សុិកញ្ចនា',sex:'M'},{id:'177',name:'វាសនា ពេជ្រសុម៉ាលី',sex:'F'}]
 };
+
 const enStudentDB = {'Found1 Morning': [
     { id: '82', name: 'Chhang Xing Ai', sex: 'F' },
     { id: '00', name: 'Chamreun Chanodom', sex: 'M' },
@@ -663,7 +708,6 @@ const enStudentDB = {'Found1 Morning': [
     { id: '4', name: 'Lor Sovannhanah', sex: 'F' }
   ]
 };
-
 
 // ═══════════════════════════════════════════════════
 // TAB / MODE
@@ -877,31 +921,28 @@ function getKhmerDate(date){
 }
 
 // ═══════════════════════════════════════════════════
-// UNIFIED DOC HEADER BUILDER
-// Left  = MiKids logo 
-// Right = Kingdom of Cambodia text 
+// UNIFIED DOC HEADER — LOGO BIGGER (FIX #2)
 // ═══════════════════════════════════════════════════
 function buildDocHeader(isKh){
   const logoSrc = LOGO_B64 || 'https://i.ibb.co/RTWkghgd/Logo-Mikid-removebg-preview.png';
-  const nationKh=`<div style="font-family:'Moul',sans-serif;font-size:10pt;line-height:1.7;color:#1e293b;text-align:center;">ព្រះរាជាណាចក្រកម្ពុជា<br>ជាតិ &nbsp; សាសនា &nbsp; ព្រះមហាក្សត្រ<br><span style="letter-spacing:4px;">✵ ✵ ✵</span></div>`;
-  const nationEn=`<div style="font-family:'Playfair Display',serif;font-size:10.5pt;font-weight:700;line-height:1.7;color:#1e293b;text-align:center;">Kingdom of Cambodia<br><span style="font-weight:400;font-size:9.5pt;">Nation &nbsp;·&nbsp; Religion &nbsp;·&nbsp; King</span><br><span style="letter-spacing:6px;">✵ ✵ ✵</span></div>`;
+  const nationKh=`<div style="font-family:'Moul',sans-serif;font-size:11pt;line-height:1.8;color:#1e293b;text-align:center;">ព្រះរាជាណាចក្រកម្ពុជា<br>ជាតិ &nbsp; សាសនា &nbsp; ព្រះមហាក្សត្រ<br><span style="letter-spacing:4px;">✵ ✵ ✵</span></div>`;
+  const nationEn=`<div style="font-family:'Playfair Display',serif;font-size:11pt;font-weight:700;line-height:1.8;color:#1e293b;text-align:center;">Kingdom of Cambodia<br><span style="font-weight:400;font-size:10pt;">Nation &nbsp;·&nbsp; Religion &nbsp;·&nbsp; King</span><br><span style="letter-spacing:6px;">✵ ✵ ✵</span></div>`;
   const nationBlock = isKh ? nationKh : nationEn;
-  return `<table style="width:100%;border-collapse:collapse;margin-bottom:4mm;"><tr>
-    <!-- LEFT: MiKids logo + crest -->
+  // FIXED: larger logo (height:65px up from 42px) and larger crest (72px up from 56px)
+  return `<table style="width:100%;border-collapse:collapse;margin-bottom:5mm;"><tr>
     <td style="width:50%;vertical-align:middle;text-align:left;padding-right:6px;">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <img src="${CREST_B64}" style="width:56px;height:56px;object-fit:contain;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <img src="${CREST_B64}" style="width:72px;height:72px;object-fit:contain;flex-shrink:0;">
         <div style="text-align:left;">
-          <img src="${logoSrc}" style="height:42px;width:auto;object-fit:contain;display:block;margin-bottom:2px;" crossorigin="anonymous">
-          <div style="font-size:7.5pt;color:#1e3a8a;font-weight:700;font-family:'Playfair Display',serif;white-space:nowrap;">MiKids International School</div>
+          <img src="${logoSrc}" style="height:65px;width:auto;object-fit:contain;display:block;margin-bottom:3px;" crossorigin="anonymous">
+          <div style="font-size:8.5pt;color:#1e3a8a;font-weight:700;font-family:'Playfair Display',serif;white-space:nowrap;">MiKids International School</div>
         </div>
       </div>
     </td>
-    <!-- RIGHT: Kingdom of Cambodia + crest -->
     <td style="width:50%;vertical-align:middle;text-align:right;padding-left:6px;">
-      <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;">
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:10px;">
         <div style="text-align:right;">${nationBlock}</div>
-        <img src="${CREST_B64}" style="width:56px;height:56px;object-fit:contain;flex-shrink:0;">
+        <img src="${CREST_B64}" style="width:72px;height:72px;object-fit:contain;flex-shrink:0;">
       </div>
     </td>
   </tr></table>`;
@@ -1005,86 +1046,6 @@ function rcGenerateAndPreview(){
   const c=document.getElementById('rc-pdf-content');c.innerHTML=html;c.style.display='block';
   const area=document.getElementById('rc-pdf-area');area.style.display='block';area.scrollIntoView({behavior:'smooth'});
 }
-function rcDownloadPDF(){
-  const name=document.getElementById('rc-name').value||'ReportCard';
-  const term=document.getElementById('rc-term').value||'Term';
-  downloadPDF('rc-pdf-content','rc-dl-btn',name,term);
-}
-
-// ═══════════════════════════════════════════════════
-// downloadPDF — FIXED: proper clone visibility + image CORS
-// ═══════════════════════════════════════════════════
-function downloadPDF(contentId,btnId,className,period){
-  const el=document.getElementById(contentId);
-  if(!el||!el.innerHTML.trim()){alert('Please generate a report first!');return;}
-  const btn=document.getElementById(btnId);const orig=btn.innerHTML;
-  btn.innerHTML='⏳ Generating...';btn.disabled=true;
-  const W=794;
-  const clone=el.cloneNode(true);
-  // FIXED: force display block and all visibility properties on clone
-  clone.style.cssText=`position:fixed;top:-9999px;left:0;width:${W}px;background:white;display:block;visibility:visible;opacity:1;z-index:-1;pointer-events:none;`;
-  document.body.appendChild(clone);
-  // Replace any external ibb.co img srcs with LOGO_B64 to avoid CORS
-  if(LOGO_B64){
-    clone.querySelectorAll('img').forEach(img=>{
-      if(img.src && img.src.includes('ibb.co')){
-        img.src=LOGO_B64;
-      }
-    });
-  }
-  const imgs=Array.from(clone.querySelectorAll('img'));
-  let loaded=0;
-  const proceed=()=>{
-    if(loaded<imgs.length)return;
-    setTimeout(()=>{
-      html2canvas(clone,{
-        scale:2,useCORS:true,allowTaint:true,
-        backgroundColor:'#ffffff',logging:false,
-        width:W,windowWidth:W,imageTimeout:12000
-      }).then(canvas=>{
-        document.body.removeChild(clone);
-        const{jsPDF}=window.jspdf;
-        const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
-        const A4W=210,A4H=297;
-        const mpp=A4W/canvas.width;
-        const imgH=canvas.height*mpp;
-        if(imgH<=A4H+2){
-          const safeImgH=Math.max(1,+(imgH.toFixed(2)));
-          pdf.addImage(canvas.toDataURL('image/jpeg',.95),'JPEG',0,0,A4W,safeImgH);
-        } else {
-          let yOff=0;
-          while(yOff<imgH){
-            if(yOff>0)pdf.addPage();
-            const srcY=yOff/mpp;
-            const sliceH=Math.min(A4H/mpp,canvas.height-srcY);
-            if(sliceH<=0)break;
-            const sc=document.createElement('canvas');
-            sc.width=canvas.width;sc.height=Math.ceil(sliceH);
-            sc.getContext('2d').drawImage(canvas,0,srcY,canvas.width,sliceH,0,0,canvas.width,sliceH);
-            const pageImgH=Math.max(1,+(sliceH*mpp).toFixed(2));
-            pdf.addImage(sc.toDataURL('image/jpeg',.92),'JPEG',0,0,A4W,pageImgH);
-            yOff+=A4H;
-          }
-        }
-        pdf.save(`MiKids_${(className||'Report').replace(/\s+/g,'_')}_${period}.pdf`);
-        btn.innerHTML=orig;btn.disabled=false;
-      }).catch(err=>{
-        if(document.body.contains(clone))document.body.removeChild(clone);
-        btn.innerHTML=orig;btn.disabled=false;
-        alert('PDF error: '+err.message);
-      });
-    },300);
-  };
-  if(!imgs.length){setTimeout(proceed,500);return;}
-  imgs.forEach(img=>{
-    if(img.complete&&img.naturalWidth>0){loaded++;proceed();}
-    else{img.onload=()=>{loaded++;proceed();};img.onerror=()=>{loaded++;proceed();};}
-  });
-  setTimeout(()=>{if(btn.disabled){loaded=imgs.length;proceed();}},10000);
-}
-
-function khDownloadPDF(){downloadPDF('kh-pdf-content','kh-downloadBtn',khSel.value,document.getElementById('kh-monthInput').value);}
-function enDownloadPDF(){downloadPDF('en-pdf-content','en-downloadBtn',enSel.value,document.getElementById('en-monthInput').value);}
 
 // ═══════════════════════════════════════════════════
 // GRADE / HONOR HELPERS
@@ -1098,24 +1059,17 @@ function buildHonorCard(s,rank,isKh,defImg){
   const corners=`<div style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:10;"><div style="position:absolute;top:0;left:0;width:${S};height:${S};border-top:${T} solid ${C};border-left:${T} solid ${C};"></div><div style="position:absolute;top:0;right:0;width:${S};height:${S};border-top:${T} solid ${C};border-right:${T} solid ${C};"></div><div style="position:absolute;bottom:0;left:0;width:${S};height:${S};border-bottom:${T} solid ${C};border-left:${T} solid ${C};"></div><div style="position:absolute;bottom:0;right:0;width:${S};height:${S};border-bottom:${T} solid ${C};border-right:${T} solid ${C};"></div></div>`;
   const scoreTag=!isKh?`<div style="font-size:7.5pt;color:#64748b;margin-top:2px;">Avg: ${s?.avg?.toFixed(2)||'0.00'}</div>`:'';
   return `
-<div style="width: 135px; text-align: center; display: inline-block; vertical-align: top; margin: 5px; overflow: hidden;">
-    <div class="rank-badge ${bc}" ${mf}>${rl}</div>
-    
-    <div style="position: relative; display: inline-block; width: 132px; height: 170px; background: #f0f0f0;">
-        <div class="photo-box" style="width: 100%; height: 100%; overflow: hidden;">
-            <img src="${imgSrc}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-        </div>
-        ${corners}
-    </div>
-    
-    <div class="name-tag" style="font-size: 8pt; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; font-family: 'Battambang', sans-serif;">
-        ${s?.name || ''}
-    </div>
-    
-    <div style="margin-top: 2px;">
-        ${scoreTag}
-    </div>
+<div style="width:135px;text-align:center;display:inline-block;vertical-align:top;margin:5px;overflow:hidden;">
+  <div class="rank-badge ${bc}" ${mf}>${rl}</div>
+  <div style="position:relative;display:inline-block;width:132px;height:170px;background:#f0f0f0;">
+    <div class="photo-box" style="width:100%;height:100%;overflow:hidden;">
+      <img src="${imgSrc}" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>${corners}
+  </div>
+  <div class="name-tag" style="font-size:8pt;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;font-family:'Battambang',sans-serif;">${s?.name||''}</div>
+  <div style="margin-top:2px;">${scoreTag}</div>
 </div>`;}
+
 function buildFooter(todayKh,today,dirLabel,teachLabel,isMoul){
   const ff=isMoul?`font-family:'Moul',serif;`:`font-family:'Playfair Display',serif;`;
   return `<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:16px;padding:0 8px;font-size:9.5pt;"><div style="text-align:center;">${dirLabel}<br><strong style="${ff}font-size:10pt;">នាយកសាលា</strong></div><div style="text-align:center;">${todayKh}<br><span style="font-size:9pt;">${today}</span><br><strong style="${ff}font-size:10pt;">${teachLabel}</strong></div></div>`;
@@ -1124,7 +1078,7 @@ const khLegend=`<p style="margin-top:6px;font-size:8pt;color:#475569;">&#9632; <
 const enLegend=`<p style="margin-top:6px;font-size:8pt;color:#475569;">&#9632; <span style="color:#7c3aed;">Outstanding(A+): ≥ 9.5</span> | &#9632; <span style="color:#15803d;">Excellent(A): 8–9.4</span> | &#9632; <span style="color:#2563eb;">Good(B): 6.5–7.9</span> | &#9632; <span style="color:#d97706;">Average(C): 5–6.4</span> | &#9632; <span style="color:#be123c;">Fail(F): &lt; 5</span></p>`;
 
 // ═══════════════════════════════════════════════════
-// KH GENERATE — REPORT & HONOR (with MiKids logo)
+// KH GENERATE
 // ═══════════════════════════════════════════════════
 function khGenerate(type){
   if(!khSel.value)return alert('សូមជ្រើសរើសថ្នាក់!');
@@ -1139,8 +1093,6 @@ function khGenerate(type){
   const passed=students.filter(s=>s.avg>=5);const passCount=passed.length,passFemale=passed.filter(s=>s.isFemale).length;
   const failCount=totalS-passCount,failFemale=femaleS-passFemale;
   const pLabel=khMode==='sem'?`ឆមាស ${month}`:`ខែ${month}`;
-
-  // FIXED KH HEADER: left=MiKids logo, right=Kingdom of Cambodia
   const khHeader=buildDocHeader(true);
   let html=`<div class="page-frame">${khHeader}`;
   if(type==='REPORT'){html+=`<div style="text-align:center;margin:4px 0 8px;"><h1 style="font-family:'Moul',serif;font-size:16pt;">ចំណាត់ថ្នាក់${khMode==='sem'?'ប្រចាំឆមាស':'ប្រចាំខែ'}</h1><p style="font-family:'Moul',serif;font-size:11pt;font-weight:bold;">ថ្នាក់៖ ${khSel.value} | ${pLabel} | ឆ្នាំ${year}</p></div><table class="rpt-tbl"><thead><tr><th>ល.រ</th><th>អត្ត​លេខ</th><th>គោត្តនាម-នាម</th><th>ភេទ</th><th>មធ្យមភាគ</th><th>ចំណាត់ថ្នាក់</th><th>និទ្ទេស</th></tr></thead><tbody>${students.map((s,i)=>{const g=khGrade(s.avg);return`<tr><td>${i+1}</td><td>${s.id}</td><td class="name-col">${s.name}</td><td>${s.sex}</td><td><b>${s.avg.toFixed(2)}</b></td><td><b>${i+1}</b></td><td style="color:${g.color};font-weight:700;">${g.text}</td></tr>`;}).join('')}</tbody></table><div class="stats"><p>បញ្ជីបញ្ចប់ ${totalS} នាក់ ក្នុងនោះស្រី ${femaleS} នាក់</p><p>ជាប់ ${passCount} នាក់ ក្នុងនោះស្រី ${passFemale} នាក់ ស្មើ ${totalS?((passCount/totalS)*100).toFixed(2):0}%</p><p>ធ្លាក់ ${failCount} នាក់ ក្នុងនោះស្រី ${failFemale} នាក់ ស្មើ ${totalS?((failCount/totalS)*100).toFixed(2):0}%</p>${khLegend}</div>`;}
@@ -1151,7 +1103,7 @@ function khGenerate(type){
 }
 
 // ═══════════════════════════════════════════════════
-// EN GENERATE — REPORT & HONOR (with MiKids logo)
+// EN GENERATE
 // ═══════════════════════════════════════════════════
 function enGenerate(type){
   if(!enSel.value)return alert('Please select a class first!');
@@ -1167,8 +1119,6 @@ function enGenerate(type){
   const passed=students.filter(s=>s.avg>=5);const passCount=passed.length,passFemale=passed.filter(s=>s.isFemale).length;
   const failCount=totalS-passCount,failFemale=femaleS-passFemale;
   const pLabel=enMode==='sem'?`Semester ${month}`:`Month: ${month}`;
-
-  // FIXED EN HEADER: left=MiKids logo, right=Kingdom of Cambodia
   const enHeader=buildDocHeader(false);
   let html=`<div class="page-frame">${enHeader}`;
   if(type==='REPORT'){html+=`<div style="text-align:center;margin:4px 0 8px;"><h1 style="font-family:'Playfair Display',serif;font-size:17pt;font-weight:700;">${enMode==='sem'?'Semester':'Monthly'} Academic Rankings</h1><p style="font-size:10.5pt;font-weight:600;margin-top:3px;">Class: ${enSel.value} | ${pLabel} | Year: ${year}</p></div><table class="rpt-tbl"><thead><tr><th>#</th><th>ID</th><th>Full Name</th><th>Gender</th><th>Average</th><th>Rank</th><th>Grade</th></tr></thead><tbody>${students.map((s,i)=>{const g=enGrade(s.avg);return`<tr><td>${i+1}</td><td>${s.id}</td><td class="name-col">${s.name}</td><td>${s.sex}</td><td><b>${s.avg.toFixed(2)}</b></td><td><b>${i+1}</b></td><td style="color:${g.color};font-weight:700;">${g.text}</td></tr>`;}).join('')}</tbody></table><div class="stats"><p>Total: <b>${totalS}</b> (Female: <b>${femaleS}</b>)</p><p>Passed: <b>${passCount}</b> (Female: <b>${passFemale}</b>) — ${totalS?((passCount/totalS)*100).toFixed(1):0}%</p><p>Failed: <b>${failCount}</b> (Female: <b>${failFemale}</b>) — ${totalS?((failCount/totalS)*100).toFixed(1):0}%</p>${enLegend}</div>`;}
@@ -1208,7 +1158,7 @@ function buildReportCard(s,rank,term,year,className,teacherName){
   const overallG=rcGradeCalc(activeAvg10);
   const isPassed=activeAvg10>=5;
   const defAvatar=`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#94a3b8;font-size:9pt;flex-direction:column;">📷<br>Photo</div>`;
-  const gradingRows=[{l:'A',d:'Excellent',r:'90-100'},{l:'B',d:'Very Good',r:'80-89'},{l:'C',d:'Good',r:'70-79'},{l:'D',d:'Above Average',r:'60-69'},{l:'E',d:'Average',r:'50-59'},{l:'F',d:'Fail',r:'Below 50 Percent'}];
+  const gradingRows=[{l:'A',d:'Excellent',r:'90-100'},{l:'B',d:'Very Good',r:'80-89'},{l:'C',d:'Good',r:'70-79'},{l:'D',d:'Above Average',r:'60-69'},{l:'E',d:'Average',r:'50-59'},{l:'F',d:'Fail',r:'Below 50%'}];
   const gradHtml=gradingRows.map(g=>`<tr><td style="border:1px solid #000;padding:3px 5px;text-align:center;font-weight:700;">${g.l}</td><td style="border:1px solid #000;padding:3px 5px;">${g.d}</td><td style="border:1px solid #000;padding:3px 5px;text-align:center;">${g.r}</td></tr>`).join('');
   let rowsHtml='';
   classCriteria.forEach((c,ri)=>{
@@ -1220,7 +1170,6 @@ function buildReportCard(s,rank,term,year,className,teacherName){
     const bg=ri%2===0?'white':'#f8fafc';
     rowsHtml+=`<tr style="background:${bg};"><td style="border:1px solid #000;padding:4px;text-align:center;">${ri+1}</td><td style="border:1px solid #000;padding:4px 4px 4px 8px;font-weight:600;">${c.name}</td><td style="border:1px solid #000;padding:4px;text-align:center;">10%</td><td style="border:1px solid #000;padding:4px;text-align:center;font-weight:600;">${v!==null?pctDisp:''}</td><td style="border:1px solid #000;padding:4px;text-align:center;color:${g.color};font-weight:700;">${g.letter}</td><td style="border:1px solid #000;padding:4px;text-align:center;"></td><td style="border:1px solid #000;padding:4px;text-align:center;">${v!==null?v.toFixed(2):''}</td><td style="border:1px solid #000;padding:4px;text-align:center;">${res}</td></tr>`;
   });
-  const logoSrc = LOGO_B64 || 'https://i.ibb.co/RTWkghgd/Logo-Mikid-removebg-preview.png';
   return `<div style="width:210mm;min-height:270mm;margin:0 auto;background:white;padding:6mm 8mm;box-sizing:border-box;page-break-after:always;font-family:'Times New Roman','Battambang',serif;display:flex;flex-direction:column;">
     ${buildDocHeader(false)}
     <div style="text-align:center;margin-bottom:3mm;">
@@ -1321,82 +1270,6 @@ function enGenerateReportCards(){
   document.getElementById('en-downloadBtn').style.display='none';
   document.getElementById('en-downloadRcBtn').style.display='block';
   rc.scrollIntoView({behavior:'smooth'});
-}
-
-// ═══════════════════════════════════════════════════
-// enDownloadRC — multi-page report cards PDF
-// ═══════════════════════════════════════════════════
-function enDownloadRC(){
-  const container=document.getElementById('en-rc-content');
-  if(!container||!container.innerHTML.trim()){alert('Please generate report cards first!');return;}
-  const btn=document.getElementById('en-downloadRcBtn');
-  const orig=btn.innerHTML;
-  btn.innerHTML='⏳ Generating...';btn.disabled=true;
-  const cards=Array.from(container.querySelectorAll('div[style*="page-break-after"]'));
-  if(!cards.length){downloadPDF('en-rc-content','en-downloadRcBtn',enSel.value+'_RC',document.getElementById('en-monthInput').value);return;}
-  const{jsPDF}=window.jspdf;
-  const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
-  const A4W=210,A4H=297;
-  let pageIdx=0;
-  function renderCard(idx){
-    if(idx>=cards.length){
-      pdf.save('MiKids_'+enSel.value.replace(/\s+/g,'_')+'_ReportCards_'+document.getElementById('en-monthInput').value+'.pdf');
-      btn.innerHTML=orig;btn.disabled=false;return;
-    }
-    const card=cards[idx];
-    const wrap=document.createElement('div');
-    wrap.style.cssText='position:fixed;top:-9999px;left:0;width:794px;background:white;display:block;visibility:visible;opacity:1;z-index:-1;pointer-events:none;';
-    const clone=card.cloneNode(true);
-    clone.style.pageBreakAfter='auto';clone.style.width='794px';
-    // Replace external logo URLs with base64
-    if(LOGO_B64){
-      clone.querySelectorAll('img').forEach(img=>{
-        if(img.src&&img.src.includes('ibb.co'))img.src=LOGO_B64;
-      });
-    }
-    wrap.appendChild(clone);document.body.appendChild(wrap);
-    const imgs=Array.from(wrap.querySelectorAll('img'));
-    let loaded=0;
-    const proceed=()=>{
-      if(loaded<imgs.length)return;
-      setTimeout(()=>{
-        html2canvas(wrap,{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#ffffff',logging:false,width:element.scrollWidth,windowWidth:794,imageTimeout:12000}).then(canvas=>{
-          document.body.removeChild(wrap);
-          const mpp=A4W/canvas.width;
-          const imgH=canvas.height*mpp;
-          if(pageIdx>0)pdf.addPage();
-          if(imgH<=A4H+2){
-            const safeH=Math.max(1,+(imgH.toFixed(2)));
-            pdf.addImage(canvas.toDataURL('image/jpeg',0,92),'JPEG',0,0,A4W,safeH);
-          } else {
-            let yRC=0,firstRC=true;
-            while(yRC<canvas.height){
-              if(!firstRC)pdf.addPage();firstRC=false;
-              const slH=Math.min(Math.round(A4H/mpp),canvas.height-yRC);
-              if(slH<=0)break;
-              const scC=document.createElement('canvas');
-              scC.width=canvas.width;scC.height=slH;
-              scC.getContext('2d').drawImage(canvas,0,yRC,canvas.width,slH,0,0,canvas.width,slH);
-              const pImgH=Math.max(1,+(slH*mpp).toFixed(2));
-              pdf.addImage(scC.toDataURL('image/jpeg',.92),'JPEG',0,0,A4W,pImgH);
-              yRC+=slH;
-            }
-          }
-          pageIdx++;renderCard(idx+1);
-        }).catch(err=>{
-          if(document.body.contains(wrap))document.body.removeChild(wrap);
-          console.error('Card render error:',err);pageIdx++;renderCard(idx+1);
-        });
-      },200);
-    };
-    if(!imgs.length){setTimeout(proceed,300);return;}
-    imgs.forEach(img=>{
-      if(img.complete&&img.naturalWidth>0){loaded++;proceed();}
-      else{img.onload=()=>{loaded++;proceed();};img.onerror=()=>{loaded++;proceed();};}
-    });
-    setTimeout(()=>{if(loaded<imgs.length){loaded=imgs.length;proceed();}},5000);
-  }
-  renderCard(0);
 }
 
 // Close modal on outside click
