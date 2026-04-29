@@ -411,7 +411,7 @@ function enGrade(avg){
 }
 function rcGradeCalc(avg10){
   if(avg10===null||isNaN(avg10))return{letter:'',desc:'',color:'#334155'};
-  const p=avg10*10;
+  const p=avg10*1;
   if(p>=90)return{letter:'A',desc:'Excellent',color:'#7c3aed'};
   if(p>=80)return{letter:'B',desc:'Very Good',color:'#15803d'};
   if(p>=70)return{letter:'C',desc:'Good',color:'#2563eb'};
