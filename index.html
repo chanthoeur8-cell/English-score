@@ -67,14 +67,8 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
 .grade-cell{font-weight:700;font-size:7.5pt;}
 .score-tbl input.in-name{width:130px;border:none;background:transparent;font-size:8.5pt;font-family:'Battambang','DM Sans',sans-serif;padding:2px 4px;}
 .score-tbl input.in-name:focus{outline:none;border-bottom:1px solid var(--blue);}
-.rc-btn-row{background:#7c3aed;color:white;border:none;padding:4px 8px;border-radius:5px;cursor:pointer;font-size:7.5pt;font-weight:700;white-space:nowrap;}
-.rc-btn-row:hover{background:#6d28d9;}
 .pdf-wrap{display:none;width:210mm;background:white!important;margin:20px auto 0;border:1px solid #ddd;border-radius:4px;}
 .page-frame{padding:7mm;box-sizing:border-box;}
-.doc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1mm;}
-.hd-logo img{width:190px;height:auto;}
-.hd-nation-kh{text-align:center;font-family:'Moul',serif;font-size:14pt;line-height:1.6;}
-.hd-nation-en{text-align:center;font-family:'Playfair Display',serif;font-size:13pt;font-weight:700;line-height:1.5;color:#1e293b;}
 .rpt-tbl{width:100%;border-collapse:collapse;font-size:9.5pt;margin-top:8px;}
 .rpt-tbl th,.rpt-tbl td{border:1px solid black!important;padding:5px 6px;text-align:center;}
 .rpt-tbl th{background:#f1f5f9!important;font-weight:700;font-size:9pt;}
@@ -110,7 +104,6 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
 .rc-score-std{font-size:8pt;color:#94a3b8;}
 .rc-score-inp{width:70px;padding:5px 6px;border:1.5px solid var(--blue);border-radius:5px;text-align:center;font-size:10pt;font-weight:700;color:var(--navy);}
 .rc-score-inp.auto-filled{border-color:#7c3aed;background:#faf5ff;}
-.rc-score-computed{font-size:9pt;font-weight:700;min-width:36px;text-align:right;}
 .rc-photo-area{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
 .rc-photo-preview{width:70px;height:88px;border:2px dashed var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#f8fafc;flex-shrink:0;}
 .rc-photo-preview img{width:100%;height:100%;object-fit:cover;}
@@ -241,8 +234,8 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
         <option>Level2 Afternoon</option>
       </select>
     </div>
-    <div><label id="en-period-label">Month / Term</label><input type="text" id="en-monthInput" value="January"></div>
-    <div><label>Academic Year</label><input type="text" id="en-yearInput" value="2025"></div>
+    <div><label id="en-period-label">Month / Term</label><input type="text" id="en-monthInput" value="April 2026"></div>
+    <div><label>Academic Year</label><input type="text" id="en-yearInput" value="2025-2026"></div>
     <div><label>Teacher Name</label><input type="text" id="en-teacherInput" placeholder="e.g. Dorn Sreyneth"></div>
   </div>
   <div class="tbl-wrap" id="en-wrap-month">
@@ -315,12 +308,12 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
       <div class="rc-info-grid">
         <div class="rc-field"><label>Student Name</label><input type="text" id="rc-name" placeholder="Full name"></div>
         <div class="rc-field"><label>Gender</label><select id="rc-gender"><option value="M">Male</option><option value="F">Female</option></select></div>
-        <div class="rc-field"><label>Level / Book</label><input type="text" id="rc-level" placeholder="e.g. Level 1 Book B"></div>
+        <div class="rc-field"><label>Level / Book</label><input type="text" id="rc-level" placeholder="e.g. Level 1 Book1 B"></div>
         <div class="rc-field"><label>Room</label><input type="text" id="rc-room" value="L1"></div>
         <div class="rc-field"><label>Teacher</label><input type="text" id="rc-teacher" placeholder="Teacher name"></div>
         <div class="rc-field"><label>Time</label><select id="rc-time"><option>Morning</option><option>Afternoon</option><option>Evening</option></select></div>
         <div class="rc-field"><label>Term</label><input type="text" id="rc-term" value="Term 2"></div>
-        <div class="rc-field"><label>Year</label><input type="text" id="rc-year" value="2025"></div>
+        <div class="rc-field"><label>Year</label><input type="text" id="rc-year" value="2025-2026"></div>
         <div class="rc-field"><label>Photo (optional)</label><input type="file" id="rc-photo-file" accept="image/*" onchange="rcPreviewPhoto(event)" style="font-size:8.5pt;padding:4px;"></div>
       </div>
       <div class="rc-photo-area">
@@ -337,7 +330,7 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
         <div class="rc-scores-grid" id="rc-scores-grid"></div>
       </div>
       <div style="background:#1e3a8a;color:white;border-radius:10px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-        <span style="font-size:10pt;font-weight:600;">Total Score (out of 10)</span>
+        <span style="font-size:10pt;font-weight:600;">Total Score (out of 100%)</span>
         <span id="rc-live-total" style="font-size:20pt;font-weight:700;">—</span>
         <span id="rc-live-grade" style="font-size:11pt;font-weight:700;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:6px;">—</span>
       </div>
@@ -360,29 +353,15 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════
-// LOGO PRELOADER — converts external logo to base64 for pdf rendering
-// ═══════════════════════════════════════════════════
-let LOGO_B64 = '';
+let LOGO_B64='';
 (function preloadLogo(){
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.onload = function(){
-    try{
-      const c = document.createElement('canvas');
-      c.width = img.naturalWidth; c.height = img.naturalHeight;
-      c.getContext('2d').drawImage(img,0,0);
-      LOGO_B64 = c.toDataURL('image/png');
-    }catch(e){ LOGO_B64 = img.src; }
-  };
-  img.onerror = function(){ LOGO_B64 = ''; };
-  img.src = 'https://i.ibb.co/RTWkghgd/Logo-Mikid-removebg-preview.png';
+  const img=new Image();img.crossOrigin='anonymous';
+  img.onload=function(){try{const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0);LOGO_B64=c.toDataURL('image/png');}catch(e){LOGO_B64=img.src;}};
+  img.onerror=function(){LOGO_B64='';};
+  img.src='https://i.ibb.co/RTWkghgd/Logo-Mikid-removebg-preview.png';
 })();
 
-// ═══════════════════════════════════════════════════
-// CONSTANTS & CREST (base64 embedded)
-// ═══════════════════════════════════════════════════
-const CREST_B64='data:image/png;base64,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';
+const CREST_B64='data:image/png;base64,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';
 
 const RC_CRITERIA=[
   {no:1,name:'Attendance',std:10,col:0},{no:2,name:'Homework',std:10,col:1},
@@ -392,9 +371,7 @@ const RC_CRITERIA=[
   {no:9,name:'Life Skills',std:10,col:8},{no:10,name:'Chinese',std:10,col:9}
 ];
 
-// ═══════════════════════════════════════════════════
-// GRADE HELPERS
-// ═══════════════════════════════════════════════════
+// ═══ GRADE HELPERS ═══
 function khGrade(avg){
   if(avg>=9.5)return{text:'ល្អណាស់',color:'#7c3aed'};
   if(avg>=8)return{text:'ល្អ',color:'#15803d'};
@@ -409,9 +386,9 @@ function enGrade(avg){
   if(avg>=50)return{text:'C — Average',color:'#d97706'};
   return{text:'F — Fail',color:'#be123c'};
 }
-function rcGradeCalc(avg10){
-  if(avg10===null||isNaN(avg10))return{letter:'',desc:'',color:'#334155'};
-  const p=avg10*1;
+function rcGradeCalc(pct){
+  if(pct===null||isNaN(pct))return{letter:'',desc:'',color:'#334155'};
+  const p=parseFloat(pct);
   if(p>=90)return{letter:'A',desc:'Excellent',color:'#7c3aed'};
   if(p>=80)return{letter:'B',desc:'Very Good',color:'#15803d'};
   if(p>=70)return{letter:'C',desc:'Good',color:'#2563eb'};
@@ -426,9 +403,7 @@ function calcAvg(row){
   return{total,avg:total/vals.length};
 }
 
-// ═══════════════════════════════════════════════════
-// KH SEMESTER CALC
-// ═══════════════════════════════════════════════════
+// ═══ SEM CALC ═══
 function updateKhSemRow(row,allRows){
   const exVals=Array.from(row.querySelectorAll('.kh-ex')).map(x=>x.value.trim()).filter(v=>v!=='').map(Number).filter(v=>!isNaN(v));
   const examAvg=exVals.length?exVals.reduce((a,b)=>a+b,0)/exVals.length:null;
@@ -480,20 +455,12 @@ function updateEnRanks(rows){
   });
 }
 
-// ═══════════════════════════════════════════════════
-// LOCAL STORAGE
-// ═══════════════════════════════════════════════════
+// ═══ LOCAL STORAGE ═══
 function lsKey(tab,mode,cls){return 'mikids_'+tab+'_'+mode+'_'+cls;}
 function saveData(tab,mode,cls){
   const sel=tab==='kh'?(mode==='month'?'.kh-row':'.kh-sem-row'):(mode==='month'?'.en-row':'.en-sem-row');
-  const data=Array.from(document.querySelectorAll(sel)).map(r=>({
-    scores:Array.from(r.querySelectorAll('.sc')).map(x=>x.value),
-    name:r.querySelector('.in-name')?.value||''
-  }));
-  const meta={
-    month:document.getElementById(tab==='kh'?'kh-monthInput':'en-monthInput')?.value||'',
-    year:document.getElementById(tab==='kh'?'kh-yearInput':'en-yearInput')?.value||''
-  };
+  const data=Array.from(document.querySelectorAll(sel)).map(r=>({scores:Array.from(r.querySelectorAll('.sc')).map(x=>x.value),name:r.querySelector('.in-name')?.value||''}));
+  const meta={month:document.getElementById(tab==='kh'?'kh-monthInput':'en-monthInput')?.value||'',year:document.getElementById(tab==='kh'?'kh-yearInput':'en-yearInput')?.value||''};
   try{localStorage.setItem(lsKey(tab,mode,cls),JSON.stringify({data,meta}));}catch(e){}
 }
 function loadData(tab,mode,cls){
@@ -533,9 +500,7 @@ function clearAllData(){
   alert('បានលុបទិន្នន័យទាំងអស់!');location.reload();
 }
 
-// ═══════════════════════════════════════════════════
-// STUDENT DB
-// ═══════════════════════════════════════════════════
+// ═══ STUDENT DB ═══
 const khStudentDB={
   'ថ្នាក់មត្តេយ្យកម្រិតមធ្យម(ព្រឹក)':[{id:'64',name:'ឃុន ទេពង្ស',sex:'M'},{id:'121',name:'នឿន វឌ្ឍនា',sex:'M'},{id:'128',name:'ពិសិទ្អ ច័ន្ទវឌ្ឃ',sex:'M'},{id:'141',name:'ហេង សាជីង',sex:'F'},{id:'132',name:'សុ បញ្ញា មុនិរាជ',sex:'M'},{id:'67',name:'ឈឿន ប៊ុនធឿនពុទ្ធិ',sex:'M'},{id:'173',name:'សាន្ត លីប៉េង',sex:'M'},{id:'163',name:'អេង លីឆេង',sex:'M'},{id:'179',name:'ចន្ថា វឌ្ឍនា',sex:'M'},{id:'162',name:'យ៉ាន់ សុខឡេង',sex:'M'},{id:'000',name:'សាន់ គីមប៉',sex:'M'}],
   'ថ្នាក់មត្តេយ្យកម្រិតមធ្យម(រសៀល)':[{id:'139',name:'ហ៊ឺម ម៉ីអ៊ិ',sex:'M'},{id:'146',name:'លន វេស្សភូ',sex:'M'},{id:'102',name:'សំណាង វីរៈបុត្រ',sex:'M'},{id:'67',name:'ឈឿន ប៊ុនធឿនពុទ្ធិ',sex:'M'},{id:'87',name:'អ៊ុំ រតនាសិទ្ធីការ',sex:'F'},{id:'113',name:'ស៊ីម សិទ្ធីការ',sex:'F'},{id:'164',name:'អ៊ូសុវណ្ណ វេហា',sex:'M'},{id:'177',name:'តាំង ហ៊ួយលីន',sex:'F'},{id:'165',name:'លឹម លីម៉េងគ័ង្គ',sex:'M'}],
@@ -550,275 +515,81 @@ const khStudentDB={
   'មត្ដេយ្យកម្រិតទាប(ព្រឹក)':[{id:'147',name:'សុភក្រ វីរបុត្រ',sex:'M'},{id:'166',name:'លីណា រ័ត្នហុងស័ក្កិ',sex:'M'},{id:'160',name:'ថូ សិទ្ធីយូណា',sex:'F'},{id:'175',name:'សុគន្ធ បញ្ញាស័ក',sex:'M'},{id:'000',name:'សុីម សរឧត្តម',sex:'M'},{id:'000',name:'និត សុធារាជ',sex:'M'},{id:'000',name:'វ៉េត នីរីតា',sex:'F'}],
   'មត្ដេយ្យកម្រិតទាប(រសៀល)':[{id:'175',name:'ហេង ជ័រមុីង',sex:'F'},{id:'000',name:'សាយ សុខហេង',sex:'M'},{id:'181',name:'ឈន ចេស្ដា',sex:'M'},{id:'000',name:'លាង លក្សុិកញ្ចនា',sex:'M'},{id:'177',name:'វាសនា ពេជ្រសុម៉ាលី',sex:'F'}]
 };
-const enStudentDB = {'Found1 Morning': [
-    { id: '82', name: 'Chhang Xing Ai', sex: 'F' },
-    { id: '00', name: 'Chamreun Chanodom', sex: 'M' },
-    { id: '149', name: 'Um Ratthanasithika', sex: 'F' },
-    { id: '149', name: 'Thy SovannSethika', sex: 'F' },
-    { id: '143', name: 'Phon Sokheang', sex: 'F' },
-    { id: '133', name: 'Soth Linprasith', sex: 'M' },
-    { id: '134', name: 'Eap Lying', sex: 'F' },
-    { id: '88', name: 'Sim Sethika', sex: 'F' },
-    { id: '134', name: 'Serey Chanvathana', sex: 'M' },
-    { id: '88', name: 'Hee Meying', sex: 'F' },
-    { id: '134', name: 'Chhany Susanna', sex: 'F' },
-    { id: '182', name: 'Hou Lyjing', sex: 'F' },
-    { id: '182', name: 'Tang Houylin', sex: 'F' },
-    { id: '000', name: 'Kon Vichearakalyany', sex: 'F' }
-  ],
-  'Found1 Evening': [
-    { id: '116', name: 'Ngin Tiewen', sex: 'M' },
-    { id: '58', name: 'Bunrin Khemra', sex: 'M' },
-    { id: '116', name: 'Chhon Mengsin', sex: 'M' },
-    { id: '58', name: 'Ngoun Kimhap', sex: 'M' },
-    { id: '145', name: 'Chhay Pik Ei', sex: 'F' },
-    { id: '125', name: 'Panha Phetra', sex: 'F' },
-    { id: '90', name: 'Chamroeurn Rithyreach', sex: 'M' },
-    { id: '116', name: 'Ron Raksmey', sex: 'M' },
-    { id: '116', name: 'Nith Sotheara', sex: 'M' },
-    { id: '000', name: 'Huy Vanna Chesda', sex: 'M' },
-    { id: '000', name: 'Soeurn Chansomethea', sex: 'F' },
-    { id: '159', name: 'Thon Sivgxich', sex: 'F' }
-  ],
-  'Found2 Morning': [
-    { id: '86', name: 'Theng Mengly', sex: 'M' },
-    { id: '00', name: 'Sreang Seavfong', sex: 'M' },
-    { id: '00', name: 'Heng Meyyi', sex: 'F' },
-    { id: '00', name: 'Oeun Povvorleak', sex: 'F' },
-    { id: '00', name: 'Han Sivhor', sex: 'F' },
-    { id: '00', name: 'Rath Sovannchannaka', sex: 'M' },
-    { id: '00', name: 'Chamreun Manita', sex: 'F' },
-    { id: '00', name: 'Zhao Wenhao', sex: 'M' },
-    { id: '70', name: 'Rath Rathap', sex: 'M' }
-  ],
-  'Found2 Afternoon': [
-    { id: '68', name: 'Song Rithysak', sex: 'M' },
-    { id: '00', name: 'Pov Sokchen', sex: 'M' },
-    { id: '66', name: 'Buleng Aiden', sex: 'M' },
-    { id: '67', name: 'Phok Speedey', sex: 'M' },
-    { id: '00', name: 'Im Rochaknea', sex: 'F' },
-    { id: '00', name: 'Ngoun Panhaputhysac', sex: 'M' },
-    { id: '00', name: 'Chea Lechkolin', sex: 'M' },
-    { id: '00', name: 'Nara Hengly', sex: 'M' },
-    { id: '00', name: 'Chhan Vireakseth', sex: 'M' },
-    { id: '00', name: 'Sok Sambath', sex: 'M' },
-    { id: '00', name: 'Sok Dalis', sex: 'F' },
-    { id: '00', name: 'Ly Chhay chhoin', sex: 'M' }
-  ],
-  'Nursery Morning': [
-    { id: '148', name: 'Beres Maikeus', sex: 'M' },
-    { id: '144', name: 'Heng Santipheap', sex: 'M' },
-    { id: '157', name: 'Doung Sometha', sex: 'M' },
-    { id: '183', name: 'Thong Fongmeng', sex: 'M' },
-    { id: '158', name: 'Punlok Viraksith', sex: 'M' },
-    { id: '172', name: 'Reathana Sievle', sex: 'F' },
-    { id: '180', name: 'Rat Pichmorakot', sex: 'F' },
-    { id: '178', name: 'Livthy Jutima', sex: 'F' },
-    { id: '184', name: 'Ho Liping', sex: 'M' },
-    { id: '174', name: 'Vichika Munnitepey', sex: 'F' },
-    { id: '185', name: 'Yem Putthivong', sex: 'M' },
-    { id: '171', name: 'Song Siriboth', sex: 'M' },
-    { id: '000', name: 'Van Kanha', sex: 'F' }
-  ],
-  'Nursery Afternoon': [
-    { id: '148', name: 'Beres Maikeus', sex: 'M' },
-    { id: '147', name: 'Sopheak Virakboth', sex: 'M' },
-    { id: '150', name: 'Vet Nirita', sex: 'F' },
-    { id: '166', name: 'Piseth Chanvatthana', sex: 'M' },
-    { id: '166', name: 'Lina Hongsakiathiphu', sex: 'M' }
-    
-  ],
-  'Level1 Morning': [
-    { id: '00', name: 'Ork Oudom', sex: 'M' },
-    { id: '00', name: 'Leang Vattanak Thanuk', sex: 'M' },
-    { id: '00', name: 'Lim Puthireach', sex: 'M' },
-    { id: '64', name: 'Ork Niseth', sex: 'M' },
-    { id: '00', name: 'Chhunta Rtthanak Condo', sex: 'F' },
-    { id: '00', name: 'Pov Sonita', sex: 'F' },
-    { id: '00', name: 'Sorn Vireak Panhatepy', sex: 'F' },
-    { id: '00', name: 'Lar Sivhuoy', sex: 'F' },
-    { id: '00', name: 'Keo Vinso Uttara', sex: 'F' },
-    { id: '00', name: 'Ya Pichmonika', sex: 'F' },
-    { id: '00', name: 'Lay Monichenda', sex: 'F' }
-  ],
-  'Level1 Afternoon': [
-    { id: '00', name: 'Chan Sopha Yamekh', sex: 'M' },
-    { id: '00', name: 'Nara Henglay', sex: 'M' },
-    { id: '00', name: 'Phal Sovann', sex: 'M' },
-    { id: '00', name: 'Sopheak Tithdana', sex: 'F' },
-    { id: '00', name: 'Lor Sovannhannah', sex: 'F' },
-    { id: '00', name: 'Lay Phearadvid', sex: 'M' },
-    { id: '00', name: 'Sopheak Rattanak', sex: 'M' },
-    { id: '00', name: 'Noeun Vattanac', sex: 'M' },
-    { id: '62', name: 'Chhuk Chenlong', sex: 'M' }
-  ],
-  'Level2 Afternoon': [
-    { id: '48', name: 'Sopheak Tithdana', sex: 'F' },
-    { id: '63', name: 'Neoun Vattanac', sex: 'M' },
-    { id: '49', name: 'Sopheak Rattanak', sex: 'M' },
-    { id: '61', name: 'Phal Sovann', sex: 'M' },
-    { id: '53', name: 'Hong Sothinal', sex: 'M' },
-    { id: '55', name: 'Theng Julinh', sex: 'F' },
-    { id: '1', name: 'Lay Phearadavid', sex: 'M' },
-    { id: '4', name: 'Lor Sovannhanah', sex: 'F' }
-  ]
+const enStudentDB={
+  'Found1 Morning':[{id:'82',name:'Chhang Xing Ai',sex:'F'},{id:'00',name:'Chamreun Chanodom',sex:'M'},{id:'149',name:'Um Ratthanasithika',sex:'F'},{id:'149',name:'Thy SovannSethika',sex:'F'},{id:'143',name:'Phon Sokheang',sex:'F'},{id:'133',name:'Soth Linprasith',sex:'M'},{id:'134',name:'Eap Lying',sex:'F'},{id:'88',name:'Sim Sethika',sex:'F'},{id:'134',name:'Serey Chanvathana',sex:'M'},{id:'88',name:'Hee Meying',sex:'F'},{id:'134',name:'Chhany Susanna',sex:'F'},{id:'182',name:'Hou Lyjing',sex:'F'},{id:'182',name:'Tang Houylin',sex:'F'},{id:'000',name:'Kon Vichearakalyany',sex:'F'}],
+  'Found1 Evening':[{id:'116',name:'Ngin Tiewen',sex:'M'},{id:'58',name:'Bunrin Khemra',sex:'M'},{id:'116',name:'Chhon Mengsin',sex:'M'},{id:'58',name:'Ngoun Kimhap',sex:'M'},{id:'145',name:'Chhay Pik Ei',sex:'F'},{id:'125',name:'Panha Phetra',sex:'F'},{id:'90',name:'Chamroeurn Rithyreach',sex:'M'},{id:'116',name:'Ron Raksmey',sex:'M'},{id:'116',name:'Nith Sotheara',sex:'M'},{id:'000',name:'Huy Vanna Chesda',sex:'M'},{id:'000',name:'Soeurn Chansomethea',sex:'F'},{id:'159',name:'Thon Sivgxich',sex:'F'}],
+  'Found2 Morning':[{id:'86',name:'Theng Mengly',sex:'M'},{id:'00',name:'Sreang Seavfong',sex:'M'},{id:'00',name:'Heng Meyyi',sex:'F'},{id:'00',name:'Oeun Povvorleak',sex:'F'},{id:'00',name:'Han Sivhor',sex:'F'},{id:'00',name:'Rath Sovannchannaka',sex:'M'},{id:'00',name:'Chamreun Manita',sex:'F'},{id:'00',name:'Zhao Wenhao',sex:'M'},{id:'70',name:'Rath Rathap',sex:'M'}],
+  'Found2 Afternoon':[{id:'68',name:'Song Rithysak',sex:'M'},{id:'00',name:'Pov Sokchen',sex:'M'},{id:'66',name:'Buleng Aiden',sex:'M'},{id:'67',name:'Phok Speedey',sex:'M'},{id:'00',name:'Im Rochaknea',sex:'F'},{id:'00',name:'Ngoun Panhaputhysac',sex:'M'},{id:'00',name:'Chea Lechkolin',sex:'M'},{id:'00',name:'Nara Hengly',sex:'M'},{id:'00',name:'Chhan Vireakseth',sex:'M'},{id:'00',name:'Sok Sambath',sex:'M'},{id:'00',name:'Sok Dalis',sex:'F'},{id:'00',name:'Ly Chhay chhoin',sex:'M'}],
+  'Nursery Morning':[{id:'148',name:'Michael Beres',sex:'M'},{id:'144',name:'Heng Santipheap',sex:'M'},{id:'157',name:'Doung Sometha',sex:'M'},{id:'183',name:'Thong Fongmeng',sex:'M'},{id:'158',name:'Punlok Viraksith',sex:'M'},{id:'172',name:'Reathana Sievle',sex:'F'},{id:'180',name:'Rat Pichmorakot',sex:'F'},{id:'178',name:'Livthy Jutima',sex:'F'},{id:'184',name:'Ho Liping',sex:'M'},{id:'174',name:'Vichika Munnitepey',sex:'F'},{id:'185',name:'Yem Putthivong',sex:'M'},{id:'171',name:'Song Siriboth',sex:'M'},{id:'000',name:'Van Kanha',sex:'F'}],
+  'Nursery Afternoon':[{id:'148',name:'Michael Beres',sex:'M'},{id:'147',name:'Sopheak Virakboth',sex:'M'},{id:'150',name:'Vet Nirita',sex:'F'},{id:'166',name:'Piseth Chanvatthana',sex:'M'},{id:'166',name:'Lina Hongsakiathiphu',sex:'M'}],
+  'Level1 Morning':[{id:'00',name:'Ork Oudom',sex:'M'},{id:'00',name:'Leang Vattanak Thanuk',sex:'M'},{id:'00',name:'Lim Puthireach',sex:'M'},{id:'64',name:'Ork Niseth',sex:'M'},{id:'00',name:'Chhunta Rtthanak Condo',sex:'F'},{id:'00',name:'Pov Sonita',sex:'F'},{id:'00',name:'Sorn Vireak Panhatepy',sex:'F'},{id:'00',name:'Lar Sivhuoy',sex:'F'},{id:'00',name:'Keo Vinso Uttara',sex:'F'},{id:'00',name:'Ya Pichmonika',sex:'F'},{id:'00',name:'Lay Monichenda',sex:'F'}],
+  'Level1 Afternoon':[{id:'00',name:'Chan Sopha Yamekh',sex:'M'},{id:'00',name:'Nara Henglay',sex:'M'},{id:'00',name:'Phal Sovann',sex:'M'},{id:'00',name:'Sopheak Tithdana',sex:'F'},{id:'00',name:'Lor Sovannhannah',sex:'F'},{id:'00',name:'Lay Phearadvid',sex:'M'},{id:'00',name:'Sopheak Rattanak',sex:'M'},{id:'00',name:'Noeun Vattanac',sex:'M'},{id:'62',name:'Chhuk Chenlong',sex:'M'}],
+  'Level2 Afternoon':[{id:'48',name:'Sopheak Tithdana',sex:'F'},{id:'63',name:'Neoun Vattanac',sex:'M'},{id:'49',name:'Sopheak Rattanak',sex:'M'},{id:'61',name:'Phal Sovann',sex:'M'},{id:'53',name:'Hong Sothinal',sex:'M'},{id:'55',name:'Theng Julinh',sex:'F'},{id:'1',name:'Lay Phearadavid',sex:'M'},{id:'4',name:'Lor Sovannhanah',sex:'F'}]
 };
 
-
-// ═══════════════════════════════════════════════════
-// TAB / MODE
-// ═══════════════════════════════════════════════════
+// ═══ TAB/MODE ═══
 let khMode='month',enMode='month';
-function switchTab(id,el){
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');el.classList.add('active');
-}
-function setKhMode(mode,btn){
-  khMode=mode;
-  document.querySelectorAll('#tab-kh .mode-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
-  document.getElementById('kh-wrap-month').style.display=mode==='month'?'':'none';
-  document.getElementById('kh-wrap-sem').style.display=mode==='sem'?'':'none';
-  document.getElementById('kh-period-label').textContent=mode==='sem'?'ឆមាស':'ប្រចាំខែ';
-  khOnClassChange();
-}
-function setEnMode(mode,btn){
-  enMode=mode;
-  document.querySelectorAll('#tab-en .mode-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
-  document.getElementById('en-wrap-month').style.display=mode==='month'?'':'none';
-  document.getElementById('en-wrap-sem').style.display=mode==='sem'?'':'none';
-  document.getElementById('en-class-btns').style.display='block';
-  document.getElementById('en-period-label').textContent=mode==='sem'?'Semester':'Month / Term';
-  enOnClassChange();
-}
+function switchTab(id,el){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');el.classList.add('active');}
+function setKhMode(mode,btn){khMode=mode;document.querySelectorAll('#tab-kh .mode-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('kh-wrap-month').style.display=mode==='month'?'':'none';document.getElementById('kh-wrap-sem').style.display=mode==='sem'?'':'none';document.getElementById('kh-period-label').textContent=mode==='sem'?'ឆមាស':'ប្រចាំខែ';khOnClassChange();}
+function setEnMode(mode,btn){enMode=mode;document.querySelectorAll('#tab-en .mode-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('en-wrap-month').style.display=mode==='month'?'':'none';document.getElementById('en-wrap-sem').style.display=mode==='sem'?'':'none';document.getElementById('en-class-btns').style.display='block';document.getElementById('en-period-label').textContent=mode==='sem'?'Semester':'Month / Term';enOnClassChange();}
 
-// ═══════════════════════════════════════════════════
-// TABLE BUILDERS
-// ═══════════════════════════════════════════════════
+// ═══ TABLE BUILDERS ═══
 const khSel=document.getElementById('kh-classSelect');
 khSel.add(new Option('-- ជ្រើសរើសថ្នាក់ --',''));
 Object.keys(khStudentDB).forEach(c=>khSel.add(new Option(c,c)));
 function khOnClassChange(){khMode==='month'?khLoadMonthly():khLoadSemester();}
 const scTd=(cls='')=>`<td><input type="number" class="sc-inp sc ${cls}" min="0" max="10" step="0.01" placeholder=""></td>`;
-
 function khLoadMonthly(){
   const tbody=document.getElementById('kh-monthBody');tbody.innerHTML='';
   (khStudentDB[khSel.value]||[]).forEach((s,i)=>{
-    tbody.innerHTML+=`<tr class="kh-row" data-id="${s.id}" data-sex="${s.sex}">
-      <td><b>${s.id}</b></td><td><input type="text" value="${s.name}" class="in-name"></td><td>${s.sex}</td>
-      ${scTd('km').repeat(4)+scTd('math')+scTd('sci')+scTd('soc').repeat(4)+scTd('phy').repeat(2)+scTd('comp')+scTd('ak')+scTd('val')+scTd('cn')}
-      <td><input type="number" class="sc-inp sc inp-hw" min="0" max="10" step="0.01" placeholder=""></td>
-      <td style="text-align:center;"><input type="file" accept="image/*" onchange="previewImg(event,'kh-img${i}')" style="width:80px;display:block;margin:0 auto;font-size:7pt;"><input type="hidden" id="kh-img${i}"></td>
-    </tr>`;
+    tbody.innerHTML+=`<tr class="kh-row" data-id="${s.id}" data-sex="${s.sex}"><td><b>${s.id}</b></td><td><input type="text" value="${s.name}" class="in-name"></td><td>${s.sex}</td>${scTd('km').repeat(4)+scTd('math')+scTd('sci')+scTd('soc').repeat(4)+scTd('phy').repeat(2)+scTd('comp')+scTd('ak')+scTd('val')+scTd('cn')}<td><input type="number" class="sc-inp sc inp-hw" min="0" max="10" step="0.01" placeholder=""></td><td style="text-align:center;"><input type="file" accept="image/*" onchange="previewImg(event,'kh-img${i}')" style="width:80px;display:block;margin:0 auto;font-size:7pt;"><input type="hidden" id="kh-img${i}"></td></tr>`;
   });
   loadData('kh','month',khSel.value);attachAutoSave('kh','month',khSel.value);
 }
 function khLoadSemester(){
   const tbody=document.getElementById('kh-semBody');tbody.innerHTML='';
   (khStudentDB[khSel.value]||[]).forEach((s,i)=>{
-    tbody.innerHTML+=`<tr class="kh-sem-row" data-id="${s.id}" data-sex="${s.sex}">
-      <td><b>${s.id}</b></td><td><input type="text" value="${s.name}" class="in-name"></td><td>${s.sex}</td>
-      ${scTd('kh-ex').repeat(15)}
-      <td class="calc-cell kh-exam-avg">—</td>
-      <td><input type="number" class="sc-inp sc kh-mn inp-mn" min="0" max="10" step="0.01" placeholder=""></td>
-      <td class="calc-cell kh-sem-avg">—</td>
-      <td class="rank-cell kh-rank">—</td>
-      <td style="text-align:center;"><input type="file" accept="image/*" onchange="previewImg(event,'kh-sem-img${i}')" style="width:80px;display:block;margin:0 auto;font-size:7pt;"><input type="hidden" id="kh-sem-img${i}"></td>
-    </tr>`;
+    tbody.innerHTML+=`<tr class="kh-sem-row" data-id="${s.id}" data-sex="${s.sex}"><td><b>${s.id}</b></td><td><input type="text" value="${s.name}" class="in-name"></td><td>${s.sex}</td>${scTd('kh-ex sc').repeat(15)}<td class="calc-cell kh-exam-avg">—</td><td><input type="number" class="sc-inp sc kh-mn inp-mn" min="0" max="10" step="0.01" placeholder=""></td><td class="calc-cell kh-sem-avg">—</td><td class="rank-cell kh-rank">—</td><td style="text-align:center;"><input type="file" accept="image/*" onchange="previewImg(event,'kh-sem-img${i}')" style="width:80px;display:block;margin:0 auto;font-size:7pt;"><input type="hidden" id="kh-sem-img${i}"></td></tr>`;
   });
   loadData('kh','sem',khSel.value);attachAutoSave('kh','sem',khSel.value);
 }
 const enSel=document.getElementById('en-classSelect');
 function enOnClassChange(){enMode==='month'?enLoadMonthly():enLoadSemester();}
-
 function enLoadMonthly(){
   const tbody=document.getElementById('en-monthBody');tbody.innerHTML='';
   (enStudentDB[enSel.value]||[]).forEach((s,i)=>{
-    tbody.innerHTML+=`<tr class="en-row" data-id="${s.id}" data-sex="${s.sex}" data-idx="${i}">
-      <td><b>${s.id}</b></td>
-      <td><input class="in-name" type="text" value="${s.name}"></td>
-      <td>${s.sex}</td>
-      ${RC_CRITERIA.map(()=>`<td><input type="number" class="sc-inp sc en-sc" min="0" max="100" step="0.1" placeholder="" style="width:48px;"></td>`).join('')}
-      <td style="text-align:center;"><input type="file" accept="image/*" onchange="previewImg(event,'en-img${i}')" style="width:80px;display:block;margin:0 auto;font-size:7pt;"><input type="hidden" id="en-img${i}"></td>
-    </tr>`;
+    tbody.innerHTML+=`<tr class="en-row" data-id="${s.id}" data-sex="${s.sex}" data-idx="${i}"><td><b>${s.id}</b></td><td><input class="in-name" type="text" value="${s.name}"></td><td>${s.sex}</td>${RC_CRITERIA.map(()=>`<td><input type="number" class="sc-inp sc en-sc" min="0" max="100" step="0.1" placeholder="" style="width:48px;"></td>`).join('')}<td style="text-align:center;"><input type="file" accept="image/*" onchange="previewImg(event,'en-img${i}')" style="width:80px;display:block;margin:0 auto;font-size:7pt;"><input type="hidden" id="en-img${i}"></td></tr>`;
   });
   loadData('en','month',enSel.value);attachAutoSave('en','month',enSel.value);
 }
 const EN_CRITERIA=["Attendance","Homework","Quiz","Assignment","Art","Mix Skills","Listening","Speaking","Life Skills","Chinese"];
-
 function getCriteriaForClass(className){
-  const cn=(className||'').toLowerCase();
-  const isLevel=cn.includes('level'),isNursery=cn.includes('nursery');
-  const base=[
-    {name:'Attendance',idx:0},{name:'Homework',idx:1},{name:'Quiz',idx:2},{name:'Assignment',idx:3},
-    {name:'Art',idx:4},{name:'Mix Skills',idx:5},{name:'Listening',idx:6},{name:'Speaking',idx:7},
-    {name:'Life Skills',idx:8},{name:'Chinese',idx:9}
-  ];
+  const cn=(className||'').toLowerCase();const isLevel=cn.includes('level'),isNursery=cn.includes('nursery');
+  const base=[{name:'Attendance',idx:0},{name:'Homework',idx:1},{name:'Quiz',idx:2},{name:'Assignment',idx:3},{name:'Art',idx:4},{name:'Mix Skills',idx:5},{name:'Listening',idx:6},{name:'Speaking',idx:7},{name:'Life Skills',idx:8},{name:'Chinese',idx:9}];
   if(isLevel){base[2].name='Computer';base[3].name='Assignment&Quiz';}
   if(isNursery){base[2].name='Quiz&Assignment';base[9].name='Numeracy';base[3].name='Science';base[5].name='Literacy';}
   return base;
 }
-
 function enLoadSemester(){
   const tbody=document.getElementById('en-semBody');tbody.innerHTML='';
   (enStudentDB[enSel.value]||[]).forEach((s,i)=>{
-    const scCells=EN_CRITERIA.map(()=>`<td><input type="number" class="sc-inp en-sc" min="0" max="10" step="0.01" placeholder="" style="width:46px;"></td>`).join('');
-    tbody.innerHTML+=`<tr class="en-sem-row" data-id="${s.id}" data-sex="${s.sex}">
-      <td><b>${s.id}</b></td>
-      <td><input class="in-name" type="text" value="${s.name}" style="font-family:'DM Sans',sans-serif;"></td>
-      <td>${s.sex==='M'?'M':'F'}</td>
-      ${scCells}
-      <td class="calc-cell en-total">—</td>
-      <td class="avg-cell en-avg">—</td>
-      <td class="grade-cell en-grade" style="color:#94a3b8;">—</td>
-      <td class="rank-cell en-rank">—</td>
-      <td style="text-align:center;"><input type="file" accept="image/*" onchange="previewImg(event,'en-sem-img${i}')" style="width:80px;display:block;margin:0 auto;font-size:7pt;"><input type="hidden" id="en-sem-img${i}"></td>
-    </tr>`;
+    const scCells=EN_CRITERIA.map(()=>`<td><input type="number" class="sc-inp en-sc" min="0" max="100" step="0.1" placeholder="" style="width:46px;"></td>`).join('');
+    tbody.innerHTML+=`<tr class="en-sem-row" data-id="${s.id}" data-sex="${s.sex}"><td><b>${s.id}</b></td><td><input class="in-name" type="text" value="${s.name}"></td><td>${s.sex==='M'?'M':'F'}</td>${scCells}<td class="calc-cell en-total">—</td><td class="avg-cell en-avg">—</td><td class="grade-cell en-grade" style="color:#94a3b8;">—</td><td class="rank-cell en-rank">—</td><td style="text-align:center;"><input type="file" accept="image/*" onchange="previewImg(event,'en-sem-img${i}')" style="width:80px;display:block;margin:0 auto;font-size:7pt;"><input type="hidden" id="en-sem-img${i}"></td></tr>`;
   });
   const allRows=document.querySelectorAll('.en-sem-row');
-  allRows.forEach(r=>{
-    r.querySelectorAll('.en-sc,.in-name').forEach(inp=>{
-      inp.addEventListener('input',()=>{
-        const data=Array.from(allRows).map(row=>({scores:Array.from(row.querySelectorAll('.en-sc')).map(x=>x.value),name:row.querySelector('.in-name')?.value||''}));
-        try{localStorage.setItem('mikids_en_sem_'+enSel.value,JSON.stringify({data}));}catch(e){}
-        updateEnSemRow(r,allRows);
-      });
-    });
-  });
+  allRows.forEach(r=>{r.querySelectorAll('.en-sc,.in-name').forEach(inp=>{inp.addEventListener('input',()=>{const data=Array.from(allRows).map(row=>({scores:Array.from(row.querySelectorAll('.en-sc')).map(x=>x.value),name:row.querySelector('.in-name')?.value||''}));try{localStorage.setItem('mikids_en_sem_'+enSel.value,JSON.stringify({data}));}catch(e){}updateEnSemRow(r,allRows);});});});
   let saved;try{saved=JSON.parse(localStorage.getItem('mikids_en_sem_'+enSel.value));}catch(e){}
-  if(saved?.data){
-    allRows.forEach((r,i)=>{
-      if(!saved.data[i])return;
-      Array.from(r.querySelectorAll('.en-sc')).forEach((inp,j)=>{if(saved.data[i].scores?.[j]!==undefined)inp.value=saved.data[i].scores[j];});
-      const nEl=r.querySelector('.in-name');if(nEl&&saved.data[i].name)nEl.value=saved.data[i].name;
-    });
-    allRows.forEach(r=>updateEnSemRow(r,null));updateEnRanks(allRows);
-  }
+  if(saved?.data){allRows.forEach((r,i)=>{if(!saved.data[i])return;Array.from(r.querySelectorAll('.en-sc')).forEach((inp,j)=>{if(saved.data[i].scores?.[j]!==undefined)inp.value=saved.data[i].scores[j];});const nEl=r.querySelector('.in-name');if(nEl&&saved.data[i].name)nEl.value=saved.data[i].name;});allRows.forEach(r=>updateEnSemRow(r,null));updateEnRanks(allRows);}
 }
+function previewImg(e,id){const r=new FileReader();r.onload=f=>{const el=document.getElementById(id);if(el)el.value=f.target.result;};r.readAsDataURL(e.target.files[0]);}
 
-function previewImg(e,id){
-  const r=new FileReader();r.onload=f=>{const el=document.getElementById(id);if(el)el.value=f.target.result;};
-  r.readAsDataURL(e.target.files[0]);
-}
-
-// ═══════════════════════════════════════════════════
-// REPORT CARD MODAL
-// ═══════════════════════════════════════════════════
-let rcPhotoData='';
-let rcCurrentRowIdx=-1;
-
+// ═══ RC MODAL ═══
+let rcPhotoData='',rcCurrentRowIdx=-1;
 function rcBuildScoreGrid(){
   const grid=document.getElementById('rc-scores-grid');
-  grid.innerHTML=RC_CRITERIA.map((c,i)=>`
-    <div class="rc-score-row">
-      <div class="rc-score-no">${c.no}</div>
-      <span class="rc-score-label">${c.name}</span>
-      <span class="rc-score-std">${c.std}%</span>
-      <input type="number" class="rc-score-inp" id="rcs-${i}" min="0" max="100" step="0.1" placeholder="—" oninput="rcUpdateLive()">
-    </div>`).join('');
+  grid.innerHTML=RC_CRITERIA.map((c,i)=>`<div class="rc-score-row"><div class="rc-score-no">${c.no}</div><span class="rc-score-label">${c.name}</span><span class="rc-score-std">${c.std}%</span><input type="number" class="rc-score-inp" id="rcs-${i}" min="0" max="100" step="0.1" placeholder="—" oninput="rcUpdateLive()"></div>`).join('');
 }
 rcBuildScoreGrid();
-
 function rcOpenModal(rowIdx){
   rcCurrentRowIdx=rowIdx;rcPhotoData='';
   document.getElementById('rc-photo-preview').innerHTML='<span style="font-size:8pt;color:#94a3b8;text-align:center;">No Photo</span>';
@@ -827,89 +598,347 @@ function rcOpenModal(rowIdx){
   const name=row.querySelector('.in-name').value,sex=row.dataset.sex,cls=enSel.value;
   const term=document.getElementById('en-monthInput').value,year=document.getElementById('en-yearInput').value;
   document.getElementById('rc-name').value=name;document.getElementById('rc-gender').value=sex;
-  document.getElementById('rc-level').value=cls;document.getElementById('rc-term').value=term;
-  document.getElementById('rc-year').value=year;
+  document.getElementById('rc-level').value=cls;document.getElementById('rc-term').value=term;document.getElementById('rc-year').value=year;
   document.getElementById('rc-teacher').value='';document.getElementById('rc-room').value='L1';
   const scoreInputs=row.querySelectorAll('.en-sc');
-  RC_CRITERIA.forEach((c,i)=>{
-    const inp=document.getElementById('rcs-'+i);
-    const tableVal=scoreInputs[c.col]?.value?.trim();
-    if(inp){inp.value=tableVal||'';inp.classList.toggle('auto-filled',!!tableVal);}
-  });
-  rcUpdateLive();
-  document.getElementById('rc-modal').style.display='block';document.body.style.overflow='hidden';
+  RC_CRITERIA.forEach((c,i)=>{const inp=document.getElementById('rcs-'+i);const tableVal=scoreInputs[c.col]?.value?.trim();if(inp){inp.value=tableVal||'';inp.classList.toggle('auto-filled',!!tableVal);}});
+  rcUpdateLive();document.getElementById('rc-modal').style.display='block';document.body.style.overflow='hidden';
 }
 function rcCloseModal(){document.getElementById('rc-modal').style.display='none';document.body.style.overflow='';}
-function rcPreviewPhoto(e){
-  const r=new FileReader();r.onload=f=>{rcPhotoData=f.target.result;document.getElementById('rc-photo-preview').innerHTML=`<img src="${rcPhotoData}">`;}; 
-  r.readAsDataURL(e.target.files[0]);
-}
+function rcPreviewPhoto(e){const r=new FileReader();r.onload=f=>{rcPhotoData=f.target.result;document.getElementById('rc-photo-preview').innerHTML=`<img src="${rcPhotoData}">`;}; r.readAsDataURL(e.target.files[0]);}
 function rcUpdateLive(){
   let total=0,filled=0;
   RC_CRITERIA.forEach((c,i)=>{const v=parseFloat(document.getElementById('rcs-'+i)?.value);if(!isNaN(v)){total+=(v/100)*c.std;filled++;}});
   const totalEl=document.getElementById('rc-live-total'),gradeEl=document.getElementById('rc-live-grade');
-  if(filled>0){totalEl.textContent=total.toFixed(2);const g=rcGradeCalc(total/10);gradeEl.textContent=g.letter+' — '+g.desc;gradeEl.style.color=g.color;}
+  if(filled>0){const pct=total*10;totalEl.textContent=pct.toFixed(2)+'%';const g=rcGradeCalc(pct);gradeEl.textContent=g.letter+' — '+g.desc;gradeEl.style.color=g.color;}
   else{totalEl.textContent='—';gradeEl.textContent='—';gradeEl.style.color='white';}
 }
 
 // ═══════════════════════════════════════════════════
-// KHMER DATE
+// getKhmerDate — hardcoded lookup table approach
+// Reference anchor (verified by user):
+//   May 1, 2026 (Friday) = ថ្ងៃសុក្រ ១៥កើត ខែពិសាខ ឆ្នាំមមី អដ្ឋស័ក ព.ស២៥៦៩
+// Anchor JDN for May 1 2026 = 2461163
+// Anchor new moon start of Visak month = JDN 2461149 (April 17 2026 = day 1 kert Visak)
+// So May 1 2026 = day 15 kert Visak ✓  (2461163 - 2461149 + 1 = 15)
 // ═══════════════════════════════════════════════════
 function getKhmerDate(date){
-  const d=new Date(date);const year=d.getFullYear(),month=d.getMonth()+1,day=d.getDate();
-  const khDays=['អាទិត្យ','ចន្ទ','អង្គារ','ពុធ','ព្រហស្បតិ៍','សុក្រ','សៅរ៍'];
+  const d=new Date(date);
   const toKh=n=>String(n).split('').map(c=>'០១២៣៤៥៦៧៨៩'[+c]).join('');
+  const khDays=['អាទិត្យ','ចន្ទ','អង្គារ','ពុធ','ព្រហស្បតិ៍','សុក្រ','សៅរ៍'];
   const dayName=khDays[d.getDay()];
-  const a=Math.floor((14-month)/12),y=year+4800-a,m=month+12*a-3;
-  const JDN=day+Math.floor((153*m+2)/5)+365*y+Math.floor(y/4)-Math.floor(y/100)+Math.floor(y/400)-32045;
-  const REF=2451551,SYN=29.53059;
-  const lunarAge=((JDN-REF)%SYN+SYN)%SYN;const ldr=Math.floor(lunarAge)+1;
-  let paksha,ld;if(ldr<=15){paksha='កើត';ld=ldr;}else{paksha='រោច';ld=ldr-15;}
-  const tl=Math.floor((JDN-REF)/SYN)-1;
-  const months=['មិគសិរ','បុស្ស','មាឃ','ផល្គុន','ចេត្រ','វិសាខ','ជេស្ឋ','អាសាឍ','ស្រាពណ៍','ភទ្របទ','អស្សុជ','កត្តិក'];
-  const khM=months[((tl+4)%12+12)%12];
-  const khYear=(month<4||(month===4&&day<13))?year-1:year;
+
+  const yr=d.getFullYear(),mo=d.getMonth()+1,dy=d.getDate();
+
+  // Compute Julian Day Number
+  const A=Math.floor((14-mo)/12),Y=yr+4800-A,M=mo+12*A-3;
+  const JDN=dy+Math.floor((153*M+2)/5)+365*Y+Math.floor(Y/4)-Math.floor(Y/100)+Math.floor(Y/400)-32045;
+
+  // === ANCHOR (verified) ===
+  // May 1, 2026 = JDN 2461163 = day 15 kert Visak
+  // So new moon (day 1 kert) = JDN 2461163 - 14 = 2461149, but since dayInMonth=JDN-ANCHOR gives 0-based,
+  // we set ANCHOR_JDN = 2461149 so dayInMonth = 2461163-2461149 = 14, lunarDay = 14+1 = 15 ✓
+  // HOWEVER user screenshot shows 14 kert, meaning our JDN for May 1 is off by 1.
+  // Real JDN May 1 2026: a=(14-5)/12=0, Y=2026+4800=6826, M=5+0-3=2
+  // JDN=1+floor((153*2+2)/5)+365*6826+floor(6826/4)-floor(6826/100)+floor(6826/400)-32045
+  //    =1+61+2491490+1706-68+17-32045 = 2461162
+  // So May 1 2026 = JDN 2461162. For day 15: anchor = 2461162 - 14 = 2461148
+  const ANCHOR_JDN = 2461148; // new moon = April 17 2026; May 1 = JDN 2461162 → day 15 kert ✓
+  const ANCHOR_MONTH_IDX = 5; // Visak = index 5 in khMonths array below
+  const SYN = 29.53059;
+
+  // Days since anchor new moon
+  const daysSinceAnchor = JDN - ANCHOR_JDN;
+
+  // Which synodic month are we in?
+  const monthOffset = Math.floor(daysSinceAnchor / SYN);
+  // Day within the current synodic month (0-based)
+  const dayInMonth = Math.floor(daysSinceAnchor - monthOffset * SYN);
+  // Lunar day 1..30
+  const lunarDay = dayInMonth + 1;
+
+  let paksha, ld;
+  if(lunarDay <= 15){ paksha='កើត'; ld=lunarDay; }
+  else{ paksha='រោច'; ld=lunarDay-15; }
+
+  // Khmer lunar month
+  const khMonths=['មិគសិរ','បុស្ស','មាឃ','ផល្គុន','ចេត្រ','វិសាខ','ជេស្ឋ','អាសាឍ','ស្រាពណ៍','ភទ្របទ','អស្សុជ','កត្តិក'];
+  const khMonthIdx=((ANCHOR_MONTH_IDX + monthOffset)%12+12)%12;
+  const khMonth=khMonths[khMonthIdx];
+
+  // Khmer Buddhist Era year — new year after Khmer New Year (Apr 13-14)
+  const khBE=(mo>4||(mo===4&&dy>=13))?yr+543:yr+542;
+
+  // Animal cycle — anchor: 2026 Khmer year = មមី (index 6 in array below)
+  // Array starts from ជូត=0; 2026 khmer year មមី
   const animals=['ជូត','ឆ្លូវ','ខាល','ថោះ','រោង','ម្សាញ់','មមី','មមែ','វក','រកា','ជ','កុរ'];
-  const animal=animals[((khYear-2024+4)%12+12)%12];
-  const sasors=['សំរឹទ្ធ​ស័ក','ឯក​ស័ក','ទោ​ស័ក','ត្រី​ស័ក','ចត្វា​ស័ក','បញ្ច​ស័ក','ច​ស័ក','សប្ត​ស័ក','អដ្ឋ​ស័ក','នព្វ​ស័ក'];
-  const BE=khYear+543;const sasor=sasors[((BE-2568+5)%10+10)%10];
-  return `ថ្ងៃ${dayName} ${toKh(ld)}${paksha} ខែ${khM} ឆ្នាំ${animal} ${sasor} ព.ស ${toKh(year+543)}`;
+  // khSolarYear for animal: use Khmer year (after Apr 13 = current Gregorian year)
+  const khSolarYear=(mo>4||(mo===4&&dy>=13))?yr:yr-1;
+  // Anchor: khSolarYear 2026 → មមី = index 6; so offset from 2026
+  const animalIdx=((khSolarYear-2026+6)%12+12)%12;
+  const animal=animals[animalIdx];
+
+  // 10-year Sakor — anchor: BE 2569 = អដ្ឋស័ក = index 8
+  const sasors=['សំរឹទ្ធស័ក','ឯកស័ក','ទោស័ក','ត្រីស័ក','ចត្វាស័ក','បញ្ចស័ក','ចស័ក','សប្តស័ក','អដ្ឋស័ក','នព្វស័ក'];
+  const sasorIdx=((khBE-2569+8)%10+10)%10;
+  const sasor=sasors[sasorIdx];
+
+  return `ថ្ងៃ${dayName} ${toKh(ld)}${paksha} ខែ${khMonth} ឆ្នាំ${animal} ${sasor} ព.ស${toKh(khBE)}`;
 }
 
 // ═══════════════════════════════════════════════════
-// UNIFIED DOC HEADER BUILDER
-// Left  = MiKids logo 
-// Right = Kingdom of Cambodia text 
+// buildDocHeader — Logo+Crest LEFT | Nation text RIGHT (side by side)
+// No MiKids text under logo, no duplicate crest on right
 // ═══════════════════════════════════════════════════
 function buildDocHeader(isKh){
-  const logoSrc = LOGO_B64 || 'https://i.ibb.co/RTWkghgd/Logo-Mikid-removebg-preview.png';
-  const nationKh=`<div style="font-family:'Moul',sans-serif;font-size:10pt;line-height:1.7;color:#1e293b;text-align:center;">ព្រះរាជាណាចក្រកម្ពុជា<br>ជាតិ &nbsp; សាសនា &nbsp; ព្រះមហាក្សត្រ<br><span style="letter-spacing:4px;">✵ ✵ ✵</span></div>`;
-  const nationEn=`<div style="font-family:'Playfair Display',serif;font-size:10.5pt;font-weight:700;line-height:1.7;color:#1e293b;text-align:center;">Kingdom of Cambodia<br><span style="font-weight:400;font-size:9.5pt;">Nation &nbsp;·&nbsp; Religion &nbsp;·&nbsp; King</span><br><span style="letter-spacing:6px;">✵ ✵ ✵</span></div>`;
-  const nationBlock = isKh ? nationKh : nationEn;
+  const logoImg=LOGO_B64
+    ?`<img src="${LOGO_B64}" style="height:110px;width:auto;object-fit:contain;display:block;" alt="MiKids">`
+    :`<div style="font-family:'Arial Black',sans-serif;font-size:9pt;font-weight:900;color:#1e3a8a;">MiKids</div>`;
+
+  const nationKh=`
+    <div style="text-align:center;">
+      <div style="font-family:'Moul',serif;font-size:10.5pt;font-weight:700;line-height:1.8;color:#000;">ព្រះរាជាណាចក្រកម្ពុជា</div>
+      <div style="font-family:'Moul',serif;font-size:9pt;font-weight:700;line-height:1.8;color:#000;">ជាតិ &nbsp; សាសនា &nbsp; ព្រះមហាក្សត្រ</div>
+      <div style="font-family:'Moul',serif;font-size:8.5pt;letter-spacing:4px;color:#000;margin-top:2px;">✵ ✵ ✵</div>
+    </div>`;
+
+  const nationEn=`
+    <div style="text-align:center;">
+      <div style="font-family:'Times New Roman',serif;font-size:13pt;font-weight:900;line-height:1.6;color:#000;text-transform:uppercase;letter-spacing:1px;">Kingdom of Cambodia</div>
+      <div style="font-family:'Times New Roman',serif;font-size:13pt;font-weight:900;line-height:1.6;color:#000;letter-spacing:1px;">Nation &nbsp;&nbsp; Religion &nbsp;&nbsp; King</div>
+      <div style="font-family:'Times New Roman',serif;font-size:9pt;letter-spacing:5px;color:#000;margin-top:1px;">✵ ✵ ✵</div>
+    </div>`;
+
+  const nationBlock=isKh?nationKh:nationEn;
+
+  // Layout: [Logo + Crest LEFT]  |  [Nation text RIGHT]  — side by side, no duplicate crest
   return `<table style="width:100%;border-collapse:collapse;margin-bottom:4mm;"><tr>
-    <!-- LEFT: MiKids logo + crest -->
-    <td style="width:50%;vertical-align:middle;text-align:left;padding-right:6px;">
+    <td style="width:50%;vertical-align:middle;text-align:left;padding-right:8px;">
       <div style="display:flex;align-items:center;gap:8px;">
-        <img src="${CREST_B64}" style="width:56px;height:56px;object-fit:contain;flex-shrink:0;">
-        <div style="text-align:left;">
-          <img src="${logoSrc}" style="height:95px;width:auto;object-fit:contain;display:block;margin-bottom:2px;" crossorigin="anonymous">
-          <div style="font-size:7.5pt;color:#1e3a8a;font-weight:700;font-family:'Playfair Display',serif;white-space:nowrap;">MiKids International School</div>
-        </div>
+        ${logoImg}
+        <img src="${CREST_B64}" style="width:90px;height:90px;object-fit:contain;flex-shrink:0;" alt="">
       </div>
     </td>
-    <!-- RIGHT: Kingdom of Cambodia + crest -->
-    <td style="width:50%;vertical-align:middle;text-align:right;padding-left:6px;">
-      <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;">
-        <div style="text-align:right;">${nationBlock}</div>
-        <img src="${CREST_B64}" style="width:56px;height:56px;object-fit:contain;flex-shrink:0;">
-      </div>
+    <td style="width:50%;vertical-align:middle;text-align:center;">
+      ${nationBlock}
     </td>
   </tr></table>`;
 }
 
+// ═══ HONOR/REPORT HELPERS ═══
+function buildHonorCard(s,rank,isKh,defImg){
+  const bc=rank===1?'gold':rank===2?'silver':rank===3?'bronze':'plain';
+  const rl=isKh?['','១','២','៣','៤','៥'][rank]:String(rank);
+  const mf=isKh?`style="font-family:'Moul',serif;"`:'';
+  const imgSrc=s?.img||defImg;
+  const C='white',S='20px',T='4px';
+  const corners=`<div style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:10;"><div style="position:absolute;top:0;left:0;width:${S};height:${S};border-top:${T} solid ${C};border-left:${T} solid ${C};"></div><div style="position:absolute;top:0;right:0;width:${S};height:${S};border-top:${T} solid ${C};border-right:${T} solid ${C};"></div><div style="position:absolute;bottom:0;left:0;width:${S};height:${S};border-bottom:${T} solid ${C};border-left:${T} solid ${C};"></div><div style="position:absolute;bottom:0;right:0;width:${S};height:${S};border-bottom:${T} solid ${C};border-right:${T} solid ${C};"></div></div>`;
+  const scoreTag=!isKh?`<div style="font-size:7.5pt;color:#64748b;margin-top:2px;">Avg: ${s?.avg?.toFixed(2)||'0.00'}</div>`:'';
+  return `<div style="width:135px;text-align:center;display:inline-block;vertical-align:top;margin:5px;overflow:hidden;"><div class="rank-badge ${bc}" ${mf}>${rl}</div><div style="position:relative;display:inline-block;width:132px;height:170px;background:#f0f0f0;"><div class="photo-box" style="width:100%;height:100%;overflow:hidden;"><img src="${imgSrc}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>${corners}</div><div class="name-tag" style="font-size:8pt;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;font-family:'Battambang',sans-serif;">${s?.name||''}</div><div style="margin-top:2px;">${scoreTag}</div></div>`;
+}
+function buildFooter(todayKh,today,dirLabel,teachLabel,isMoul){
+  const ff=isMoul?`font-family:'Moul',serif;`:`font-family:'Times New Roman',serif;`;
+  return `<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:16px;padding:0 8px;font-size:9.5pt;"><div style="text-align:center;">${dirLabel}<br><strong style="${ff}font-size:10pt;">នាយកសាលា</strong></div><div style="text-align:center;">${todayKh}<br><span style="font-size:9pt;">${today}</span><br><strong style="${ff}font-size:10pt;">${teachLabel}</strong></div></div>`;
+}
+const khLegend=`<p style="margin-top:6px;font-size:8pt;color:#475569;">&#9632; <span style="color:#7c3aed;">ល្អណាស់: ≥ ៩.៥</span> | &#9632; <span style="color:#15803d;">ល្អ: ៨–៩.៤</span> | &#9632; <span style="color:#2563eb;">ល្អបង្គួរ: ៦.៥–៧.៩</span> | &#9632; <span style="color:#d97706;">មធ្យម: ៥–៦.៤</span> | &#9632; <span style="color:#be123c;">ខ្សោយ: &lt; ៥</span></p>`;
+const enLegend=`<p style="margin-top:6px;font-size:8pt;color:#475569;">&#9632; <span style="color:#7c3aed;">A+(Outstanding): ≥ 90.5</span> | &#9632; <span style="color:#15803d;">A(Excellent): 80–90.4</span> | &#9632; <span style="color:#2563eb;">B(Good): 60.5–79.9</span> | &#9632; <span style="color:#d97706;">C(Average): 50–60.4</span> | &#9632; <span style="color:#be123c;">F(Fail): &lt; 50</span></p>`;
+
+// ═══ KH GENERATE ═══
+function khGenerate(type){
+  if(!khSel.value)return alert('សូមជ្រើសរើសថ្នាក់!');
+  const month=document.getElementById('kh-monthInput').value,year=document.getElementById('kh-yearInput').value;
+  const now=new Date();const todayKh=getKhmerDate(now),today=getKhmerDateFull(now);
+  const defImg='https://i.ibb.co/20Z4h6Z8/Untitled-design-6.png';
+  let students=[];
+  if(khMode==='sem'){document.querySelectorAll('.kh-sem-row').forEach((r,i)=>{const semCell=r.querySelector('.kh-sem-avg');const avg=semCell&&semCell.textContent!=='—'?parseFloat(semCell.textContent):0;students.push({id:r.dataset.id,name:r.querySelector('.in-name').value,sex:r.dataset.sex==='M'?'ប្រុស':'ស្រី',isFemale:r.dataset.sex==='F',avg,img:document.getElementById('kh-sem-img'+i)?.value||''});});}
+  else{document.querySelectorAll('.kh-row').forEach((r,i)=>{const{avg}=calcAvg(r);students.push({id:r.dataset.id,name:r.querySelector('.in-name').value,sex:r.dataset.sex==='M'?'ប្រុស':'ស្រី',isFemale:r.dataset.sex==='F',avg,img:document.getElementById('kh-img'+i)?.value||''});});}
+  students.sort((a,b)=>b.avg-a.avg);
+  const totalS=students.length,femaleS=students.filter(s=>s.isFemale).length;
+  const passed=students.filter(s=>s.avg>=5);const passCount=passed.length,passFemale=passed.filter(s=>s.isFemale).length;
+  const failCount=totalS-passCount,failFemale=femaleS-passFemale;
+  const pLabel=khMode==='sem'?`ឆមាស ${month}`:`ខែ${month}`;
+  let html=`<div class="page-frame">${buildDocHeader(true)}`;
+  if(type==='REPORT'){html+=`<div style="text-align:center;margin:4px 0 8px;"><h1 style="font-family:'Moul',serif;font-size:16pt;">ចំណាត់ថ្នាក់${khMode==='sem'?'ប្រចាំឆមាស':'ប្រចាំខែ'}</h1><p style="font-family:'Moul',serif;font-size:11pt;font-weight:bold;">ថ្នាក់៖ ${khSel.value} | ${pLabel} | ឆ្នាំ${year}</p></div><table class="rpt-tbl"><thead><tr><th>ល.រ</th><th>អត្ត​លេខ</th><th>គោត្តនាម-នាម</th><th>ភេទ</th><th>មធ្យមភាគ</th><th>ចំណាត់ថ្នាក់</th><th>និទ្ទេស</th></tr></thead><tbody>${students.map((s,i)=>{const g=khGrade(s.avg);return`<tr><td>${i+1}</td><td>${s.id}</td><td class="name-col">${s.name}</td><td>${s.sex}</td><td><b>${s.avg.toFixed(2)}</b></td><td><b>${i+1}</b></td><td style="color:${g.color};font-weight:700;">${g.text}</td></tr>`;}).join('')}</tbody></table><div class="stats"><p>បញ្ជីបញ្ចប់ ${totalS} នាក់ ក្នុងនោះស្រី ${femaleS} នាក់</p><p>ជាប់ ${passCount} នាក់ ក្នុងនោះស្រី ${passFemale} នាក់ ស្មើ ${totalS?((passCount/totalS)*100).toFixed(2):0}%</p><p>ធ្លាក់ ${failCount} នាក់ ក្នុងនោះស្រី ${failFemale} នាក់ ស្មើ ${totalS?((failCount/totalS)*100).toFixed(2):0}%</p>${khLegend}</div>`;}
+  else{const top5=students.slice(0,5);html+=`<div style="text-align:center;"><h1 style="font-family:'Moul',serif;color:#be123c;font-size:36pt;margin:0;">តារាងកិត្តិយស</h1><div style="width:180px;height:2px;background:#f59e0b;margin:3px auto;"></div><p style="font-family:'Moul',serif;font-size:12pt;font-weight:bold;margin-top:4px;">ថ្នាក់៖ ${khSel.value}</p><p style="font-family:'Moul',serif;font-size:11pt;">${pLabel} ឆ្នាំ ${year}</p></div><div class="honor-grid"><div class="honor-row">${buildHonorCard(top5[0],1,true,defImg)}</div>${top5.length>=3?`<div class="honor-row">${buildHonorCard(top5[1],2,true,defImg)}${buildHonorCard(top5[2],3,true,defImg)}</div>`:''}${top5.length>=5?`<div class="honor-row">${buildHonorCard(top5[3],4,true,defImg)}${buildHonorCard(top5[4],5,true,defImg)}</div>`:''}</div>`;}
+  html+=buildFooter(todayKh,today,'បានឃើញ និងឯកភាព','គ្រូប្រចាំថ្នាក់',true)+'</div>';
+  const c=document.getElementById('kh-pdf-content');c.innerHTML=html;c.style.display='block';
+  document.getElementById('kh-downloadBtn').style.display='block';c.scrollIntoView({behavior:'smooth'});
+}
+
+// ═══ EN GENERATE ═══
+function getKhmerDateFull(date){
+  // Returns: ភ្នំពេញ, ថ្ងៃ... (full Khmer date with city prefix)
+  const toKh=n=>String(n).split('').map(c=>'០១២៣៤៥៦៧៨៩'[+c]).join('');
+  const d=new Date(date);
+  const khMonthsNum=['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
+  return `ភ្នំពេញ, ថ្ងៃទី${toKh(d.getDate())} ខែ${khMonthsNum[d.getMonth()]} ឆ្នាំ${toKh(d.getFullYear())}`;
+}
+
+function enGenerate(type){
+  if(!enSel.value)return alert('Please select a class first!');
+  const month=document.getElementById('en-monthInput').value,year=document.getElementById('en-yearInput').value;
+  const now=new Date();
+  const todayKh=getKhmerDate(now),defImg='https://i.ibb.co/20Z4h6Z8/Untitled-design-6.png';
+  const todayEn=getKhmerDateFull(now);
+  let students=[];
+  if(enMode==='sem'){document.querySelectorAll('.en-sem-row').forEach((r,i)=>{const avgCell=r.querySelector('.en-avg');const avg=avgCell&&avgCell.textContent!=='—'?parseFloat(avgCell.textContent):0;students.push({id:r.dataset.id,name:r.querySelector('.in-name').value,sex:r.dataset.sex==='M'?'Male':'Female',isFemale:r.dataset.sex==='F',avg,img:document.getElementById('en-sem-img'+i)?.value||''});});}
+  else{document.querySelectorAll('.en-row').forEach((r,i)=>{const{avg}=calcAvg(r);students.push({id:r.dataset.id,name:r.querySelector('.in-name').value,sex:r.dataset.sex==='M'?'Male':'Female',isFemale:r.dataset.sex==='F',avg,img:''});});}
+  students.sort((a,b)=>b.avg-a.avg);
+  const totalS=students.length,femaleS=students.filter(s=>s.isFemale).length;
+  const passed=students.filter(s=>s.avg>=50);const passCount=passed.length,passFemale=passed.filter(s=>s.isFemale).length;
+  const failCount=totalS-passCount,failFemale=femaleS-passFemale;
+  const pLabel=enMode==='sem'?`Semester ${month}`:`Month: ${month}`;
+  let html=`<div class="page-frame">${buildDocHeader(false)}`;
+  if(type==='REPORT'){html+=`<div style="text-align:center;margin:4px 0 8px;"><h1 style="font-family:'Playfair Display',serif;font-size:17pt;font-weight:700;">${enMode==='sem'?'Semester':'Monthly'} Academic Rankings</h1><p style="font-size:10.5pt;font-weight:600;margin-top:3px;">Class: ${enSel.value} | ${pLabel} | Year: ${year}</p></div><table class="rpt-tbl"><thead><tr><th>#</th><th>ID</th><th>Full Name</th><th>Gender</th><th>Average</th><th>Rank</th><th>Grade</th></tr></thead><tbody>${students.map((s,i)=>{const g=enGrade(s.avg);return`<tr><td>${i+1}</td><td>${s.id}</td><td class="name-col">${s.name}</td><td>${s.sex}</td><td><b>${s.avg.toFixed(2)}</b></td><td><b>${i+1}</b></td><td style="color:${g.color};font-weight:700;">${g.text}</td></tr>`;}).join('')}</tbody></table><div class="stats"><p>Total: <b>${totalS}</b> (Female: <b>${femaleS}</b>)</p><p>Passed: <b>${passCount}</b> (Female: <b>${passFemale}</b>) — ${totalS?((passCount/totalS)*100).toFixed(1):0}%</p><p>Failed: <b>${failCount}</b> (Female: <b>${failFemale}</b>) — ${totalS?((failCount/totalS)*100).toFixed(1):0}%</p>${enLegend}</div>`;}
+  else{const top5=students.slice(0,5);html+=`<div style="text-align:center;"><h1 style="font-family:'Playfair Display',serif;font-size:28pt;color:#be123c;">Honor Board</h1><div style="width:140px;height:2px;background:#f59e0b;margin:3px auto;"></div><p style="font-weight:700;font-size:12pt;margin-top:4px;">Class: ${enSel.value}</p><p style="font-size:11pt;">${pLabel} | Year: ${year}</p></div><div class="honor-grid"><div class="honor-row">${buildHonorCard(top5[0],1,false,defImg)}</div>${top5.length>=3?`<div class="honor-row">${buildHonorCard(top5[1],2,false,defImg)}${buildHonorCard(top5[2],3,false,defImg)}</div>`:''}${top5.length>=5?`<div class="honor-row">${buildHonorCard(top5[3],4,false,defImg)}${buildHonorCard(top5[4],5,false,defImg)}</div>`:''}</div>`;}
+  html+=buildFooter(todayKh,todayEn,'Approved by','Class Teacher',false)+'</div>';
+  const c=document.getElementById('en-pdf-content');c.innerHTML=html;c.style.display='block';
+  document.getElementById('en-downloadBtn').style.display='block';c.scrollIntoView({behavior:'smooth'});
+}
+
 // ═══════════════════════════════════════════════════
-// REPORT CARD GENERATE (individual modal)
+// buildReportCard
 // ═══════════════════════════════════════════════════
+const classInfo={
+  'Found1 Morning':{level:'Fount 1',room:'Found1',time:'Morning'},
+  'Found1 Evening':{level:'Fount 1',room:'Found1',time:'Evening'},
+  'Found2 Morning':{level:'Fount 2',room:'Fount2',time:'Morning'},
+  'Found2 Afternoon':{level:'Fount 2',room:'Fount2',time:'Afternoon'},
+  'Nursery Morning':{level:'Nursery',room:'Nursery',time:'Morning'},
+  'Nursery Afternoon':{level:'Nursery',room:'Nursery',time:'Afternoon'},
+  'Level1 Morning':{level:'Level 1 Book1 B',room:'L1',time:'Morning'},
+  'Level1 Afternoon':{level:'Level 1 Book1 B',room:'L1',time:'Afternoon'},
+  'Level2 Afternoon':{level:'Level 2',room:'L2',time:'Afternoon'}
+};
+
+function buildReportCard(s,rank,term,year,className,teacherName){
+  const info=classInfo[className]||{level:className,room:'—',time:'—'};
+  const now=new Date();
+  const todayKh=getKhmerDate(now);
+  const todayEn=getKhmerDateFull(now);
+  const scores=s.scores||[];
+  const vals=scores.map(v=>(v!==null&&v!==undefined&&v!=='')?parseFloat(v):null);
+  const classCriteria=getCriteriaForClass(className);
+  const activeCount=classCriteria.length;
+  const activeVals=classCriteria.map(c=>vals[c.idx]).filter(v=>v!==null);
+  const activeTotal=activeVals.length?activeVals.reduce((a,b)=>a+b,0):0;
+  const activeAvgPct=activeVals.length?(activeTotal/activeCount):0;
+  const overallG=rcGradeCalc(activeAvgPct);
+  const isPassed=activeAvgPct>=50;
+  const defAvatar=`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#94a3b8;font-size:9pt;flex-direction:column;">📷<br>Photo</div>`;
+  const gradingRows=[{l:'A',d:'Excellent',c:'#7c3aed',r:'90-100'},{l:'B',d:'Very Good',c:'#15803d',r:'80-89'},{l:'C',d:'Good',c:'#2563eb',r:'70-79'},{l:'D',d:'Above Average',c:'#d97706',r:'60-69'},{l:'E',d:'Average',c:'#b45309',r:'50-59'},{l:'F',d:'Fail',c:'#be123c',r:'Below 50%'}];
+  const gradHtml=gradingRows.map(g=>`<tr><td style="border:1px solid #000;padding:3px 5px;text-align:center;font-weight:700;color:${g.c};">${g.l}</td><td style="border:1px solid #000;padding:3px 5px;">${g.d}</td><td style="border:1px solid #000;padding:3px 5px;text-align:center;">${g.r}</td></tr>`).join('');
+  let rowsHtml='';
+  classCriteria.forEach((c,ri)=>{
+    const v=vals[c.idx];
+    const g=(v!==null&&!isNaN(v))?rcGradeCalc(v):{letter:'',desc:'',color:'#334155'};
+    const pctDisp=v!==null?v.toFixed(1)+'%':'';
+    const res=v!==null?(v>=50?'<span style="color:#15803d;font-weight:700;">Pass</span>':'<span style="color:#be123c;font-weight:700;">Fail</span>'):'';
+    const bg=ri%2===0?'white':'#f8fafc';
+    rowsHtml+=`<tr style="background:${bg};">
+      <td style="border:1px solid #000;padding:4px;text-align:center;">${ri+1}</td>
+      <td style="border:1px solid #000;padding:4px 4px 4px 8px;font-weight:600;">${c.name}</td>
+      <td style="border:1px solid #000;padding:4px;text-align:center;">10%</td>
+      <td style="border:1px solid #000;padding:4px;text-align:center;font-weight:600;">${v!==null?pctDisp:''}</td>
+      <td style="border:1px solid #000;padding:4px;text-align:center;color:${g.color};font-weight:700;">${g.letter}</td>
+      <td style="border:1px solid #000;padding:4px;text-align:center;"></td>
+      <td style="border:1px solid #000;padding:4px;text-align:center;">${v!==null?v.toFixed(1)+'%':''}</td>
+      <td style="border:1px solid #000;padding:4px;text-align:center;">${res}</td>
+    </tr>`;
+  });
+
+  return `<div style="width:210mm;min-height:270mm;margin:0 auto;background:white;padding:6mm 8mm;box-sizing:border-box;page-break-after:always;font-family:'Times New Roman','Battambang',serif;display:flex;flex-direction:column;">
+
+    ${buildDocHeader(false)}
+
+    <div style="text-align:center;margin-bottom:3mm;">
+      <div style="font-size:16pt;font-weight:700;color:#be123c;font-family:'Times New Roman',serif;text-transform:uppercase;letter-spacing:1px;">Student Report Card</div>
+      <div style="font-size:10pt;font-weight:600;margin-top:1mm;font-family:'Times New Roman',serif;color:#374151;">Foundation to Primary English Program</div>
+      <div style="font-size:13pt;font-weight:800;margin-top:2mm;color:#1e3a8a;font-family:'Times New Roman',serif;letter-spacing:0.5px;border-bottom:1.5px solid #1e3a8a;display:inline-block;padding-bottom:1px;">Academic Grade of ${term} ${year}</div>
+    </div>
+
+    <table style="width:100%;border-collapse:collapse;margin-bottom:3mm;"><tr>
+      <td style="vertical-align:top;padding-right:3mm;">
+        <table style="width:100%;border-collapse:collapse;font-size:10.5pt;">
+          <tr><td style="border:1px solid #000;padding:5px 8px;font-weight:700;background:#e8edf8;width:34%;">Student</td><td style="border:1px solid #000;padding:5px 8px;font-weight:700;">${s.name}</td></tr>
+          <tr><td style="border:1px solid #000;padding:5px 8px;font-weight:700;background:#e8edf8;">Gender</td><td style="border:1px solid #000;padding:5px 8px;">${s.sex}</td></tr>
+          <tr><td style="border:1px solid #000;padding:5px 8px;font-weight:700;background:#e8edf8;">Level</td><td style="border:1px solid #000;padding:5px 8px;">${info.level}</td></tr>
+          <tr><td style="border:1px solid #000;padding:5px 8px;font-weight:700;background:#e8edf8;">Room</td><td style="border:1px solid #000;padding:5px 8px;">${info.room}</td></tr>
+          <tr><td style="border:1px solid #000;padding:5px 8px;font-weight:700;background:#e8edf8;">Teacher</td><td style="border:1px solid #000;padding:5px 8px;">${teacherName||'&nbsp;'}</td></tr>
+          <tr><td style="border:1px solid #000;padding:5px 8px;font-weight:700;background:#e8edf8;">Time</td><td style="border:1px solid #000;padding:5px 8px;">${info.time}</td></tr>
+        </table>
+      </td>
+      <td style="width:36mm;vertical-align:top;">
+        <div style="width:36mm;height:46mm;border:2px solid #000;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+          ${s.img?`<img src="${s.img}" style="width:100%;height:100%;object-fit:cover;">`:defAvatar}
+        </div>
+      </td>
+    </tr></table>
+
+    <table style="width:100%;border-collapse:collapse;"><tr>
+      <td style="vertical-align:top;padding-right:2mm;">
+        <table style="width:100%;border-collapse:collapse;font-size:10pt;"><thead>
+          <tr style="background:#1e3a8a;color:white;">
+            <th style="border:1px solid #000;padding:5px 3px;text-align:center;font-size:9pt;min-width:24px;">No.</th>
+            <th style="border:1px solid #000;padding:5px 6px;text-align:left;font-size:9pt;">Criteria</th>
+            <th style="border:1px solid #000;padding:5px 3px;text-align:center;font-size:8.5pt;min-width:52px;">Standard<br>Score %</th>
+            <th style="border:1px solid #000;padding:5px 3px;text-align:center;font-size:8.5pt;min-width:62px;">Achievement<br>Score %</th>
+            <th style="border:1px solid #000;padding:5px 3px;text-align:center;font-size:9pt;min-width:40px;">Grade</th>
+            <th style="border:1px solid #000;padding:5px 3px;text-align:center;font-size:9pt;min-width:34px;">Rank</th>
+            <th style="border:1px solid #000;padding:5px 3px;text-align:center;font-size:8.5pt;min-width:48px;">Total<br>Score</th>
+            <th style="border:1px solid #000;padding:5px 3px;text-align:center;font-size:9pt;min-width:44px;">Result</th>
+          </tr></thead>
+          <tbody>${rowsHtml}
+          <tr style="background:#fef9c3;">
+            <td colspan="2" style="border:1px solid #000;padding:5px 8px;font-weight:700;text-align:right;font-size:10pt;">Total Average</td>
+            <td style="border:1px solid #000;padding:5px;text-align:center;font-weight:700;">100%</td>
+            <td style="border:1px solid #000;padding:5px;text-align:center;font-weight:700;font-size:10.5pt;">${activeAvgPct.toFixed(1)}%</td>
+            <td style="border:1px solid #000;padding:5px;text-align:center;font-weight:700;color:${overallG.color};font-size:11pt;">${overallG.letter}</td>
+            <td style="border:1px solid #000;padding:5px;text-align:center;font-weight:900;font-size:13pt;color:#be123c;">${rank}</td>
+            <td style="border:1px solid #000;padding:5px;text-align:center;font-weight:700;">${activeAvgPct.toFixed(1)}%</td>
+            <td style="border:1px solid #000;padding:5px;text-align:center;font-weight:900;font-size:11pt;color:${isPassed?'#15803d':'#be123c'};">${isPassed?'Pass':'Fail'}</td>
+          </tr></tbody>
+        </table>
+      </td>
+      <td style="width:52mm;vertical-align:top;">
+        <table style="width:100%;border-collapse:collapse;font-size:9.5pt;"><thead>
+          <tr style="background:#1e3a8a;color:white;"><th colspan="3" style="border:1px solid #000;padding:5px;text-align:center;">Grading System %</th></tr>
+          <tr style="background:#e2e8f0;"><th style="border:1px solid #000;padding:4px;text-align:center;">Grade</th><th style="border:1px solid #000;padding:4px;">Description</th><th style="border:1px solid #000;padding:4px;text-align:center;">%</th></tr>
+        </thead><tbody>${gradHtml}</tbody></table>
+      </td>
+    </tr></table>
+
+    <table style="width:100%;margin-top:5mm;font-size:10pt;border-collapse:collapse;"><tr>
+      <td style="text-align:center;width:33%;vertical-align:bottom;">
+        <div style="height:30px;"></div>
+        <div style="border-top:1.5px solid #000;padding-top:4px;">
+          <span style="font-family:'Moul',serif;font-size:9pt;color:#000;">បានឃើញ និង ឯកភាព</span><br>
+          <strong style="font-family:'Moul',serif;font-size:9.5pt;color:#1e3a8a;">នាយកសាលាម៉ាយឃីដ</strong>
+        </div>
+      </td>
+      <td style="text-align:center;width:34%;vertical-align:bottom;">
+        <div style="height:30px;"></div>
+        <div style="border-top:1.5px solid #000;padding-top:4px;">
+          <span style="font-family:'Battambang',sans-serif;font-size:10pt;">គ្រូប្រចាំថ្នាក់</span><br>
+          <strong style="font-size:10pt;font-family:'Times New Roman',serif;">${teacherName||'Class Teacher'}</strong>
+        </div>
+      </td>
+      <td style="text-align:center;width:33%;vertical-align:bottom;">
+        <div style="font-size:11pt;font-family:'Battambang',sans-serif;font-weight:700;line-height:1.7;margin-bottom:3px;">${todayKh}</div>
+        <div style="font-size:8.5pt;color:#374151;margin-bottom:8px;">${todayEn}</div>
+        <div style="border-top:1.5px solid #000;padding-top:4px;">
+          <strong style="font-family:'Battambang',sans-serif;font-size:10.5pt;">អាណាព្យាបាល / Parent</strong>
+        </div>
+      </td>
+    </tr></table>
+
+    <div style="text-align:center;margin-top:auto;padding-top:4mm;font-size:8.5pt;color:#000;font-weight:700;border-top:2.5px solid #000;font-family:'Battambang',sans-serif;letter-spacing:0.3px;">
+      អាសយដ្ឋាន : អគារលេខ ១៨-២០ ផ្លូវ២០០ R គីឡូម៉ែត្រលេខ៦ ឫស្សីកែវ ភ្នំពេញ &nbsp;|&nbsp; 078 315 188 &nbsp;|&nbsp; 069 522 286 &nbsp;|&nbsp; WWW.Mikidsschool.com
+    </div>
+  </div>`;
+}
+
+// ═══ INDIVIDUAL RC FROM MODAL ═══
 function rcGenerateAndPreview(){
   const name=document.getElementById('rc-name').value.trim()||'Student';
   const gender=document.getElementById('rc-gender').value;
@@ -918,28 +947,30 @@ function rcGenerateAndPreview(){
   const teacher=document.getElementById('rc-teacher').value.trim()||'—';
   const time=document.getElementById('rc-time').value;
   const term=document.getElementById('rc-term').value.trim()||'Term 2';
-  const year=document.getElementById('rc-year').value.trim()||'2025';
+  const year=document.getElementById('rc-year').value.trim()||'2025-2026';
   const now=new Date();
-  const khDate=getKhmerDate(now);
-  const enDate=`Phnom Penh, ${now.toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric'})}`;
-  let totalScore=0;
+  const todayKh=getKhmerDate(now);
+  const todayEn=getKhmerDateFull(now);
+  let totalContrib=0;
   const rows=RC_CRITERIA.map((c,i)=>{
     const inp=document.getElementById('rcs-'+i);
     const pct=inp&&inp.value.trim()!==''?parseFloat(inp.value):null;
     const contrib=pct!==null?(pct/100)*c.std:null;
-    if(contrib!==null)totalScore+=contrib;
+    if(contrib!==null)totalContrib+=contrib;
     const g=pct!==null?rcGradeCalc(pct):null;
     const result=pct!==null?(pct>=50?'<b style="color:#15803d">Pass</b>':'<b style="color:#be123c">Fail</b>'):'—';
     return{c,pct,contrib,g,result};
   });
-  const overallG=rcGradeCalc(totalScore/10);
-  const photoHtml=rcPhotoData?`<img src="${rcPhotoData}" style="width:65px;height:80px;object-fit:cover;border-radius:6px;border:2px solid #d1d5db;">`:`<div style="width:65px;height:80px;background:#f1f5f9;border:2px dashed #cbd5e1;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:7.5pt;color:#94a3b8;text-align:center;">No<br>Photo</div>`;
-  const html=`<div style="font-family:'DM Sans',sans-serif;padding:8mm;box-sizing:border-box;background:white;min-height:277mm;display:flex;flex-direction:column;">
+  const totalPct=totalContrib*10;
+  const overallG=rcGradeCalc(totalPct);
+  const overallPassed=totalPct>=50;
+
+  const html=`<div style="font-family:'Times New Roman',sans-serif;padding:8mm;box-sizing:border-box;background:white;min-height:277mm;display:flex;flex-direction:column;">
     ${buildDocHeader(false)}
     <div style="text-align:center;margin-bottom:3mm;">
-      <div style="font-size:14pt;font-weight:700;color:#be123c;font-family:'Playfair Display',serif;">Student Report Card</div>
+      <div style="font-size:16pt;font-weight:700;color:#be123c;font-family:'Times New Roman',serif;text-transform:uppercase;letter-spacing:1px;">Student Report Card</div>
       <div style="font-size:9pt;color:#374151;margin-top:1px;">Foundation to Primary English Program</div>
-      <div style="font-size:8.5pt;color:#64748b;margin-top:1px;font-weight:600;">Academic Grade of ${term} ${year}</div>
+      <div style="font-size:13pt;font-weight:800;margin-top:2mm;color:#1e3a8a;font-family:'Times New Roman',serif;letter-spacing:0.5px;border-bottom:1.5px solid #1e3a8a;display:inline-block;padding-bottom:1px;">Academic Grade of ${term} ${year}</div>
     </div>
     <div style="background:#1e3a8a;color:white;border-radius:8px;padding:7px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:3mm;gap:4px;flex-wrap:wrap;">
       <div><div style="font-size:7pt;opacity:.65;text-transform:uppercase;">Student</div><div style="font-weight:700;font-size:10.5pt;">${name}</div></div>
@@ -950,15 +981,15 @@ function rcGenerateAndPreview(){
       <div><div style="font-size:7pt;opacity:.65;text-transform:uppercase;">Time</div><div style="font-weight:700;font-size:10.5pt;">${time}</div></div>
     </div>
     <table style="width:100%;border-collapse:collapse;margin-bottom:3mm;font-size:9.5pt;"><thead>
-      <tr>
-        <th style="background:#1e3a8a;color:white;padding:6px 8px;border:1px solid #1e3a8a;width:28px;">No.</th>
-        <th style="background:#1e3a8a;color:white;padding:6px 8px;border:1px solid #1e3a8a;text-align:left;">Criteria</th>
-        <th style="background:#1e3a8a;color:white;padding:6px 8px;border:1px solid #1e3a8a;width:72px;">Standard<br><span style="font-weight:400;font-size:7.5pt;">Score %</span></th>
-        <th style="background:#1e3a8a;color:white;padding:6px 8px;border:1px solid #1e3a8a;width:80px;">Achievement<br><span style="font-weight:400;font-size:7.5pt;">Score %</span></th>
-        <th style="background:#1e3a8a;color:white;padding:6px 8px;border:1px solid #1e3a8a;width:46px;">Grade</th>
-        <th style="background:#1e3a8a;color:white;padding:6px 8px;border:1px solid #1e3a8a;width:36px;">Rank</th>
-        <th style="background:#1e3a8a;color:white;padding:6px 8px;border:1px solid #1e3a8a;width:58px;">Total<br><span style="font-weight:400;font-size:7.5pt;">Score</span></th>
-        <th style="background:#1e3a8a;color:white;padding:6px 8px;border:1px solid #1e3a8a;width:50px;">Result</th>
+      <tr style="background:#1e3a8a;color:white;">
+        <th style="border:1px solid #1e3a8a;padding:6px 8px;width:28px;">No.</th>
+        <th style="border:1px solid #1e3a8a;padding:6px 8px;text-align:left;">Criteria</th>
+        <th style="border:1px solid #1e3a8a;padding:6px 8px;width:72px;">Standard<br><span style="font-weight:400;font-size:7.5pt;">Score %</span></th>
+        <th style="border:1px solid #1e3a8a;padding:6px 8px;width:80px;">Achievement<br><span style="font-weight:400;font-size:7.5pt;">Score %</span></th>
+        <th style="border:1px solid #1e3a8a;padding:6px 8px;width:46px;">Grade</th>
+        <th style="border:1px solid #1e3a8a;padding:6px 8px;width:36px;">Rank</th>
+        <th style="border:1px solid #1e3a8a;padding:6px 8px;width:58px;">Total<br><span style="font-weight:400;font-size:7.5pt;">Score</span></th>
+        <th style="border:1px solid #1e3a8a;padding:6px 8px;width:50px;">Result</th>
       </tr></thead><tbody>
       ${rows.map((r,i)=>`<tr style="background:${i%2===0?'white':'#f8fafc'};">
         <td style="border:1px solid #d1d5db;padding:5px 8px;text-align:center;">${r.c.no}</td>
@@ -972,32 +1003,41 @@ function rcGenerateAndPreview(){
       </tr>`).join('')}
       <tr style="background:#eef2ff;"><td colspan="5" style="border:1px solid #d1d5db;padding:6px 10px;font-weight:700;text-align:right;color:#1e3a8a;">Overall Total:</td>
         <td style="border:1px solid #d1d5db;"></td>
-        <td style="border:1px solid #d1d5db;padding:6px 8px;text-align:center;font-weight:800;font-size:12pt;color:#1e3a8a;">${totalScore.toFixed(2)}</td>
-        <td style="border:1px solid #d1d5db;padding:6px 8px;text-align:center;font-weight:800;font-size:11pt;color:${overallG.color};">${overallG.letter}</td>
+        <td style="border:1px solid #d1d5db;padding:6px 8px;text-align:center;font-weight:800;font-size:12pt;color:#1e3a8a;">${totalPct.toFixed(2)}%</td>
+        <td style="border:1px solid #d1d5db;padding:6px 8px;text-align:center;">
+          <span style="font-weight:800;font-size:11pt;color:${overallG.color};">${overallG.letter}</span>
+          <br><span style="font-size:8.5pt;font-weight:700;color:${overallPassed?'#15803d':'#be123c'};">${overallPassed?'Pass':'Fail'}</span>
+        </td>
       </tr></tbody></table>
     <table style="width:100%;border-collapse:collapse;margin-top:2mm;"><tr>
       <td style="vertical-align:top;width:42%;">
         <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:7px 10px;font-size:8.5pt;">
           <div style="font-weight:700;color:#1e3a8a;margin-bottom:4px;font-size:9pt;">Grading System %</div>
           <table style="border-collapse:collapse;width:100%;">
-            ${[['A','Excellent','#15803d','90-100'],['B','Very Good','#2563eb','80-89'],['C','Good','#1e5a8a','70-79'],['D','Above Average','#d97706','60-69'],['E','Average','#f59e0b','50-59'],['F','Fail','#be123c','Below 50']].map(([g,l,c,r])=>`<tr><td style="padding:2px 5px;border:1px solid #e2e8f0;font-weight:700;color:${c};">${g}</td><td style="padding:2px 5px;border:1px solid #e2e8f0;">${l}</td><td style="padding:2px 5px;border:1px solid #e2e8f0;">${r}%</td></tr>`).join('')}
+            ${[['A','Excellent','#7c3aed','90-100'],['B','Very Good','#15803d','80-89'],['C','Good','#2563eb','70-79'],['D','Above Average','#d97706','60-69'],['E','Average','#b45309','50-59'],['F','Fail','#be123c','Below 50']].map(([g,l,c,r])=>`<tr><td style="padding:2px 5px;border:1px solid #e2e8f0;font-weight:700;color:${c};">${g}</td><td style="padding:2px 5px;border:1px solid #e2e8f0;">${l}</td><td style="padding:2px 5px;border:1px solid #e2e8f0;">${r}%</td></tr>`).join('')}
           </table>
         </div>
       </td>
-      <td style="vertical-align:top;text-align:center;width:30%;font-size:8.5pt;line-height:2;padding-top:4px;">
-        <div style="font-family:'Battambang',sans-serif;">${khDate}</div>
-        <div>${enDate}</div>
-        <div style="margin-top:4px;font-family:'Battambang',sans-serif;">បានឃើញ និង ឯកភាព</div>
-        <div style="font-weight:700;font-size:9.5pt;font-family:'Battambang',sans-serif;">នាយកសាលាម៉ាយឃីដ</div>
-        <div style="border-bottom:1px solid #374151;width:130px;margin:6px auto;"></div>
+      <td style="vertical-align:bottom;text-align:center;width:30%;font-size:8.5pt;padding-bottom:0;">
+        <div style="font-size:11pt;font-family:'Battambang',sans-serif;font-weight:700;line-height:1.7;margin-bottom:2px;">${todayKh}</div>
+        <div style="font-size:8pt;margin-bottom:8px;">${todayEn}</div>
+        <div style="border-top:1.5px solid #374151;padding-top:4px;">
+          <strong style="font-family:'Battambang',sans-serif;font-size:10.5pt;">អាណាព្យាបាល / Parent</strong>
+        </div>
       </td>
-      <td style="vertical-align:top;text-align:center;width:28%;font-size:8.5pt;line-height:2;padding-top:24px;">
-        <div style="font-family:'Battambang',sans-serif;">គ្រូប្រចាំថ្នាក់</div>
-        <div style="font-weight:700;font-size:9.5pt;">${teacher}</div>
-        <div style="border-bottom:1px solid #374151;width:130px;margin:6px auto;"></div>
+      <td style="vertical-align:bottom;text-align:center;width:28%;font-size:8.5pt;padding-bottom:0;">
+        <div style="height:36px;"></div>
+        <div style="border-top:1.5px solid #374151;padding-top:4px;">
+          <span style="font-family:'Moul',serif;font-size:9pt;color:#000;">បានឃើញ និង ឯកភាព</span><br>
+          <strong style="font-family:'Moul',serif;font-size:9.5pt;color:#1e3a8a;">នាយកសាលាម៉ាយឃីដ</strong>
+        </div>
+        <div style="margin-top:6px;border-top:1px solid #374151;padding-top:4px;">
+          <span style="font-family:'Battambang',sans-serif;">គ្រូប្រចាំថ្នាក់</span><br>
+          <strong>${teacher}</strong>
+        </div>
       </td>
     </tr></table>
-    <div style="text-align:center;margin-top:auto;padding-top:3mm;font-size:7.5pt;color:#475569;border-top:1px solid #e2e8f0;font-family:'Battambang',sans-serif;">
+    <div style="text-align:center;margin-top:auto;padding-top:4mm;font-size:8.5pt;color:#000;font-weight:700;border-top:2.5px solid #000;font-family:'Battambang',sans-serif;letter-spacing:0.3px;">
       អាសយដ្ឋាន: អគារលេខ ១៨ - ២០ ផ្លូវ២០០R គីឡូម៉ែត្រលេខ៦ ឫស្សីកែវ ភ្នំពេញ &nbsp;|&nbsp; 078 315 188 &nbsp;|&nbsp; 069 522 286 &nbsp;|&nbsp; WWW.Mikidsschool.com
     </div>
   </div>`;
@@ -1005,409 +1045,100 @@ function rcGenerateAndPreview(){
   const c=document.getElementById('rc-pdf-content');c.innerHTML=html;c.style.display='block';
   const area=document.getElementById('rc-pdf-area');area.style.display='block';area.scrollIntoView({behavior:'smooth'});
 }
-function rcDownloadPDF(){
-  const name=document.getElementById('rc-name').value||'ReportCard';
-  const term=document.getElementById('rc-term').value||'Term';
-  downloadPDF('rc-pdf-content','rc-dl-btn',name,term);
-}
+function rcDownloadPDF(){downloadPDF('rc-pdf-content','rc-dl-btn',document.getElementById('rc-name').value||'ReportCard',document.getElementById('rc-term').value||'Term');}
 
-// ═══════════════════════════════════════════════════
-// downloadPDF — FIXED: proper clone visibility + image CORS
-// ═══════════════════════════════════════════════════
+// ═══ PDF DOWNLOAD ═══
 function downloadPDF(contentId,btnId,className,period){
   const el=document.getElementById(contentId);
   if(!el||!el.innerHTML.trim()){alert('Please generate a report first!');return;}
   const btn=document.getElementById(btnId);const orig=btn.innerHTML;
   btn.innerHTML='⏳ Generating...';btn.disabled=true;
-  const W=794;
-  const clone=el.cloneNode(true);
-  // FIXED: force display block and all visibility properties on clone
+  const W=794;const clone=el.cloneNode(true);
   clone.style.cssText=`position:fixed;top:-9999px;left:0;width:${W}px;background:white;display:block;visibility:visible;opacity:1;z-index:-1;pointer-events:none;`;
   document.body.appendChild(clone);
-  // Replace any external ibb.co img srcs with LOGO_B64 to avoid CORS
-  if(LOGO_B64){
-    clone.querySelectorAll('img').forEach(img=>{
-      if(img.src && img.src.includes('ibb.co')){
-        img.src=LOGO_B64;
-      }
-    });
-  }
+  if(LOGO_B64){clone.querySelectorAll('img').forEach(img=>{if(img.src&&img.src.includes('ibb.co'))img.src=LOGO_B64;});}
   const imgs=Array.from(clone.querySelectorAll('img'));
   let loaded=0;
   const proceed=()=>{
     if(loaded<imgs.length)return;
     setTimeout(()=>{
-      html2canvas(clone,{
-        scale:2,useCORS:true,allowTaint:true,
-        backgroundColor:'#ffffff',logging:false,
-        width:W,windowWidth:W,imageTimeout:12000
-      }).then(canvas=>{
+      html2canvas(clone,{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#ffffff',logging:false,width:W,windowWidth:W,imageTimeout:12000}).then(canvas=>{
         document.body.removeChild(clone);
         const{jsPDF}=window.jspdf;
         const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
-        const A4W=210,A4H=297;
-        const mpp=A4W/canvas.width;
-        const imgH=canvas.height*mpp;
-        if(imgH<=A4H+2){
-          const safeImgH=Math.max(1,+(imgH.toFixed(2)));
-          pdf.addImage(canvas.toDataURL('image/jpeg',.95),'JPEG',0,0,A4W,safeImgH);
-        } else {
-          let yOff=0;
-          while(yOff<imgH){
-            if(yOff>0)pdf.addPage();
-            const srcY=yOff/mpp;
-            const sliceH=Math.min(A4H/mpp,canvas.height-srcY);
-            if(sliceH<=0)break;
-            const sc=document.createElement('canvas');
-            sc.width=canvas.width;sc.height=Math.ceil(sliceH);
-            sc.getContext('2d').drawImage(canvas,0,srcY,canvas.width,sliceH,0,0,canvas.width,sliceH);
-            const pageImgH=Math.max(1,+(sliceH*mpp).toFixed(2));
-            pdf.addImage(sc.toDataURL('image/jpeg',.92),'JPEG',0,0,A4W,pageImgH);
-            yOff+=A4H;
-          }
-        }
-        pdf.save(`MiKids_${(className||'Report').replace(/\s+/g,'_')}_${period}.pdf`);
-        btn.innerHTML=orig;btn.disabled=false;
-      }).catch(err=>{
-        if(document.body.contains(clone))document.body.removeChild(clone);
-        btn.innerHTML=orig;btn.disabled=false;
-        alert('PDF error: '+err.message);
-      });
+        const A4W=210,A4H=297;const mpp=A4W/canvas.width;const imgH=canvas.height*mpp;
+        if(imgH<=A4H+2){pdf.addImage(canvas.toDataURL('image/jpeg',.95),'JPEG',0,0,A4W,Math.max(1,+(imgH.toFixed(2))));}
+        else{let yOff=0;while(yOff<imgH){if(yOff>0)pdf.addPage();const srcY=yOff/mpp;const sliceH=Math.min(A4H/mpp,canvas.height-srcY);if(sliceH<=0)break;const sc=document.createElement('canvas');sc.width=canvas.width;sc.height=Math.ceil(sliceH);sc.getContext('2d').drawImage(canvas,0,srcY,canvas.width,sliceH,0,0,canvas.width,sliceH);pdf.addImage(sc.toDataURL('image/jpeg',.92),'JPEG',0,0,A4W,Math.max(1,+(sliceH*mpp).toFixed(2)));yOff+=A4H;}}
+        pdf.save(`MiKids_${(className||'Report').replace(/\s+/g,'_')}_${period}.pdf`);btn.innerHTML=orig;btn.disabled=false;
+      }).catch(err=>{if(document.body.contains(clone))document.body.removeChild(clone);btn.innerHTML=orig;btn.disabled=false;alert('PDF error: '+err.message);});
     },300);
   };
   if(!imgs.length){setTimeout(proceed,500);return;}
-  imgs.forEach(img=>{
-    if(img.complete&&img.naturalWidth>0){loaded++;proceed();}
-    else{img.onload=()=>{loaded++;proceed();};img.onerror=()=>{loaded++;proceed();};}
-  });
+  imgs.forEach(img=>{if(img.complete&&img.naturalWidth>0){loaded++;proceed();}else{img.onload=()=>{loaded++;proceed();};img.onerror=()=>{loaded++;proceed();};}});
   setTimeout(()=>{if(btn.disabled){loaded=imgs.length;proceed();}},10000);
 }
-
 function khDownloadPDF(){downloadPDF('kh-pdf-content','kh-downloadBtn',khSel.value,document.getElementById('kh-monthInput').value);}
 function enDownloadPDF(){downloadPDF('en-pdf-content','en-downloadBtn',enSel.value,document.getElementById('en-monthInput').value);}
 
-// ═══════════════════════════════════════════════════
-// GRADE / HONOR HELPERS
-// ═══════════════════════════════════════════════════
-function buildHonorCard(s,rank,isKh,defImg){
-  const bc=rank===1?'gold':rank===2?'silver':rank===3?'bronze':'plain';
-  const rl=isKh?['','១','២','៣','៤','៥'][rank]:String(rank);
-  const mf=isKh?`style="font-family:'Moul',serif;"`:'';
-  const imgSrc=s?.img||defImg;
-  const C='white',S='20px',T='4px';
-  const corners=`<div style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:10;"><div style="position:absolute;top:0;left:0;width:${S};height:${S};border-top:${T} solid ${C};border-left:${T} solid ${C};"></div><div style="position:absolute;top:0;right:0;width:${S};height:${S};border-top:${T} solid ${C};border-right:${T} solid ${C};"></div><div style="position:absolute;bottom:0;left:0;width:${S};height:${S};border-bottom:${T} solid ${C};border-left:${T} solid ${C};"></div><div style="position:absolute;bottom:0;right:0;width:${S};height:${S};border-bottom:${T} solid ${C};border-right:${T} solid ${C};"></div></div>`;
-  const scoreTag=!isKh?`<div style="font-size:7.5pt;color:#64748b;margin-top:2px;">Avg: ${s?.avg?.toFixed(2)||'0.00'}</div>`:'';
-  return `
-<div style="width: 135px; text-align: center; display: inline-block; vertical-align: top; margin: 5px; overflow: hidden;">
-    <div class="rank-badge ${bc}" ${mf}>${rl}</div>
-    
-    <div style="position: relative; display: inline-block; width: 132px; height: 170px; background: #f0f0f0;">
-        <div class="photo-box" style="width: 100%; height: 100%; overflow: hidden;">
-            <img src="${imgSrc}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-        </div>
-        ${corners}
-    </div>
-    
-    <div class="name-tag" style="font-size: 8pt; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; font-family: 'Battambang', sans-serif;">
-        ${s?.name || ''}
-    </div>
-    
-    <div style="margin-top: 2px;">
-        ${scoreTag}
-    </div>
-</div>`;}
-function buildFooter(todayKh,today,dirLabel,teachLabel,isMoul){
-  const ff=isMoul?`font-family:'Moul',serif;`:`font-family:'Playfair Display',serif;`;
-  return `<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:16px;padding:0 8px;font-size:9.5pt;"><div style="text-align:center;">${dirLabel}<br><strong style="${ff}font-size:10pt;">នាយកសាលា</strong></div><div style="text-align:center;">${todayKh}<br><span style="font-size:9pt;">${today}</span><br><strong style="${ff}font-size:10pt;">${teachLabel}</strong></div></div>`;
-}
-const khLegend=`<p style="margin-top:6px;font-size:8pt;color:#475569;">&#9632; <span style="color:#7c3aed;">ល្អណាស់: ≥ ៩០.៥</span> | &#9632; <span style="color:#15803d;">ល្អ: ៨០–៩០.៤</span> | &#9632; <span style="color:#2563eb;">ល្អបង្គួរ: ៦០.៥–៧០.៩</span> | &#9632; <span style="color:#d97706;">មធ្យម: ៥០–៦០.៤</span> | &#9632; <span style="color:#be123c;">ខ្សោយ: &lt; ៥០</span></p>`;
-const enLegend=`<p style="margin-top:6px;font-size:8pt;color:#475569;">&#9632; <span style="color:#7c3aed;">Outstanding(A+): ≥ 90.5</span> | &#9632; <span style="color:#15803d;">Excellent(A): 80–90.4</span> | &#9632; <span style="color:#2563eb;">Good(B): 60.5–70.9</span> | &#9632; <span style="color:#d97706;">Average(C): 50–60.4</span> | &#9632; <span style="color:#be123c;">Fail(F): &lt; 50</span></p>`;
-
-// ═══════════════════════════════════════════════════
-// KH GENERATE — REPORT & HONOR (with MiKids logo)
-// ══════════════════════════════════════════════════
-function khGenerate(type){
-  if(!khSel.value)return alert('សូមជ្រើសរើសថ្នាក់!');
-  const month=document.getElementById('kh-monthInput').value,year=document.getElementById('kh-yearInput').value;
-  const now=new Date();const todayKh=getKhmerDate(now),today=`ភ្នំពេញ, ថ្ងៃទី ${now.getDate()} ខែ ${month} ឆ្នាំ ${now.getFullYear()}`;
-  const defImg='https://i.ibb.co/20Z4h6Z8/Untitled-design-6.png';
-  let students=[];
-  if(khMode==='sem'){document.querySelectorAll('.kh-sem-row').forEach((r,i)=>{const semCell=r.querySelector('.kh-sem-avg');const avg=semCell&&semCell.textContent!=='—'?parseFloat(semCell.textContent):0;students.push({id:r.dataset.id,name:r.querySelector('.in-name').value,sex:r.dataset.sex==='M'?'ប្រុស':'ស្រី',isFemale:r.dataset.sex==='F',avg,img:document.getElementById('kh-sem-img'+i)?.value||''});});}
-  else{document.querySelectorAll('.kh-row').forEach((r,i)=>{const{avg}=calcAvg(r);students.push({id:r.dataset.id,name:r.querySelector('.in-name').value,sex:r.dataset.sex==='M'?'ប្រុស':'ស្រី',isFemale:r.dataset.sex==='F',avg,img:document.getElementById('kh-img'+i)?.value||''});});}
-  students.sort((a,b)=>b.avg-a.avg);
-  const totalS=students.length,femaleS=students.filter(s=>s.isFemale).length;
-  const passed=students.filter(s=>s.avg>=5);const passCount=passed.length,passFemale=passed.filter(s=>s.isFemale).length;
-  const failCount=totalS-passCount,failFemale=femaleS-passFemale;
-  const pLabel=khMode==='sem'?`ឆមាស ${month}`:`ខែ${month}`;
-
-  // FIXED KH HEADER: left=MiKids logo, right=Kingdom of Cambodia
-  const khHeader=buildDocHeader(true);
-  let html=`<div class="page-frame">${khHeader}`;
-  if(type==='REPORT'){html+=`<div style="text-align:center;margin:4px 0 8px;"><h1 style="font-family:'Moul',serif;font-size:16pt;">ចំណាត់ថ្នាក់${khMode==='sem'?'ប្រចាំឆមាស':'ប្រចាំខែ'}</h1><p style="font-family:'Moul',serif;font-size:11pt;font-weight:bold;">ថ្នាក់៖ ${khSel.value} | ${pLabel} | ឆ្នាំ${year}</p></div><table class="rpt-tbl"><thead><tr><th>ល.រ</th><th>អត្ត​លេខ</th><th>គោត្តនាម-នាម</th><th>ភេទ</th><th>មធ្យមភាគ</th><th>ចំណាត់ថ្នាក់</th><th>និទ្ទេស</th></tr></thead><tbody>${students.map((s,i)=>{const g=khGrade(s.avg);return`<tr><td>${i+1}</td><td>${s.id}</td><td class="name-col">${s.name}</td><td>${s.sex}</td><td><b>${s.avg.toFixed(2)}</b></td><td><b>${i+1}</b></td><td style="color:${g.color};font-weight:700;">${g.text}</td></tr>`;}).join('')}</tbody></table><div class="stats"><p>បញ្ជីបញ្ចប់ ${totalS} នាក់ ក្នុងនោះស្រី ${femaleS} នាក់</p><p>ជាប់ ${passCount} នាក់ ក្នុងនោះស្រី ${passFemale} នាក់ ស្មើ ${totalS?((passCount/totalS)*100).toFixed(2):0}%</p><p>ធ្លាក់ ${failCount} នាក់ ក្នុងនោះស្រី ${failFemale} នាក់ ស្មើ ${totalS?((failCount/totalS)*100).toFixed(2):0}%</p>${khLegend}</div>`;}
-  else{const top5=students.slice(0,5);html+=`<div style="text-align:center;"><h1 style="font-family:'Moul',serif;color:#be123c;font-size:36pt;margin:0;">តារាងកិត្តិយស</h1><div style="width:180px;height:2px;background:#f59e0b;margin:3px auto;"></div><p style="font-family:'Moul',serif;font-size:12pt;font-weight:bold;margin-top:4px;">ថ្នាក់៖ ${khSel.value}</p><p style="font-family:'Moul',serif;font-size:11pt;">${pLabel} ឆ្នាំ ${year}</p></div><div class="honor-grid"><div class="honor-row">${buildHonorCard(top5[0],1,true,defImg)}</div>${top5.length>=3?`<div class="honor-row">${buildHonorCard(top5[1],2,true,defImg)}${buildHonorCard(top5[2],3,true,defImg)}</div>`:''}${top5.length>=5?`<div class="honor-row">${buildHonorCard(top5[3],4,true,defImg)}${buildHonorCard(top5[4],5,true,defImg)}</div>`:''}</div>`;}
-  html+=buildFooter(todayKh,today,'បានឃើញ និងឯកភាព','គ្រូប្រចាំថ្នាក់',true)+'</div>';
-  const c=document.getElementById('kh-pdf-content');c.innerHTML=html;c.style.display='block';
-  document.getElementById('kh-downloadBtn').style.display='block';c.scrollIntoView({behavior:'smooth'});
-}
-
-// ═══════════════════════════════════════════════════
-// EN GENERATE — REPORT & HONOR (with MiKids logo)
-// ═══════════════════════════════════════════════════
-function enGenerate(type){
-  if(!enSel.value)return alert('Please select a class first!');
-  const month=document.getElementById('en-monthInput').value,year=document.getElementById('en-yearInput').value;
-  const now=new Date();
-  const todayEn=`Phnom Penh, ${now.toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric'})}`;
-  const todayKh=getKhmerDate(now),defImg='https://i.ibb.co/20Z4h6Z8/Untitled-design-6.png';
-  let students=[];
-  if(enMode==='sem'){document.querySelectorAll('.en-sem-row').forEach((r,i)=>{const avgCell=r.querySelector('.en-avg');const avg=avgCell&&avgCell.textContent!=='—'?parseFloat(avgCell.textContent):0;students.push({id:r.dataset.id,name:r.querySelector('.in-name').value,sex:r.dataset.sex==='M'?'Male':'Female',isFemale:r.dataset.sex==='F',avg,img:document.getElementById('en-sem-img'+i)?.value||''});});}
-  else{document.querySelectorAll('.en-row').forEach((r,i)=>{const{avg}=calcAvg(r);students.push({id:r.dataset.id,name:r.querySelector('.in-name').value,sex:r.dataset.sex==='M'?'Male':'Female',isFemale:r.dataset.sex==='F',avg,img:''});});}
-  students.sort((a,b)=>b.avg-a.avg);
-  const totalS=students.length,femaleS=students.filter(s=>s.isFemale).length;
-  const passed=students.filter(s=>s.avg>=5);const passCount=passed.length,passFemale=passed.filter(s=>s.isFemale).length;
-  const failCount=totalS-passCount,failFemale=femaleS-passFemale;
-  const pLabel=enMode==='sem'?`Semester ${month}`:`Month: ${month}`;
-
-  // FIXED EN HEADER: left=MiKids logo, right=Kingdom of Cambodia
-  const enHeader=buildDocHeader(false);
-  let html=`<div class="page-frame">${enHeader}`;
-  if(type==='REPORT'){html+=`<div style="text-align:center;margin:4px 0 8px;"><h1 style="font-family:'Playfair Display',serif;font-size:17pt;font-weight:700;">${enMode==='sem'?'Semester':'Monthly'} Academic Rankings</h1><p style="font-size:10.5pt;font-weight:600;margin-top:3px;">Class: ${enSel.value} | ${pLabel} | Year: ${year}</p></div><table class="rpt-tbl"><thead><tr><th>#</th><th>ID</th><th>Full Name</th><th>Gender</th><th>Average</th><th>Rank</th><th>Grade</th></tr></thead><tbody>${students.map((s,i)=>{const g=enGrade(s.avg);return`<tr><td>${i+1}</td><td>${s.id}</td><td class="name-col">${s.name}</td><td>${s.sex}</td><td><b>${s.avg.toFixed(2)}</b></td><td><b>${i+1}</b></td><td style="color:${g.color};font-weight:700;">${g.text}</td></tr>`;}).join('')}</tbody></table><div class="stats"><p>Total: <b>${totalS}</b> (Female: <b>${femaleS}</b>)</p><p>Passed: <b>${passCount}</b> (Female: <b>${passFemale}</b>) — ${totalS?((passCount/totalS)*100).toFixed(1):0}%</p><p>Failed: <b>${failCount}</b> (Female: <b>${failFemale}</b>) — ${totalS?((failCount/totalS)*100).toFixed(1):0}%</p>${enLegend}</div>`;}
-  else{const top5=students.slice(0,5);html+=`<div style="text-align:center;"><h1 style="font-family:'Playfair Display',serif;font-size:28pt;color:#be123c;">Honor Board</h1><div style="width:140px;height:2px;background:#f59e0b;margin:3px auto;"></div><p style="font-weight:700;font-size:12pt;margin-top:4px;">Class: ${enSel.value}</p><p style="font-size:11pt;">${pLabel} | Year: ${year}</p></div><div class="honor-grid"><div class="honor-row">${buildHonorCard(top5[0],1,false,defImg)}</div>${top5.length>=3?`<div class="honor-row">${buildHonorCard(top5[1],2,false,defImg)}${buildHonorCard(top5[2],3,false,defImg)}</div>`:''}${top5.length>=5?`<div class="honor-row">${buildHonorCard(top5[3],4,false,defImg)}${buildHonorCard(top5[4],5,false,defImg)}</div>`:''}</div>`;}
-  html+=buildFooter(todayKh,todayEn,'Approved by','Class Teacher',false)+'</div>';
-  const c=document.getElementById('en-pdf-content');c.innerHTML=html;c.style.display='block';
-  document.getElementById('en-downloadBtn').style.display='block';c.scrollIntoView({behavior:'smooth'});
-}
-
-// ═══════════════════════════════════════════════════
-// REPORT CARDS BULK
-// ═══════════════════════════════════════════════════
-const classInfo={
-  'Found1 Morning':{level:'Fount 1',room:'Found1',time:'Morning'},
-  'Found1 Evening':{level:'Fount 1',room:'Found1',time:'Evening'},
-  'Found2 Morning':{level:'Fount 2',room:'Fount2',time:'Morning'},
-  'Found2 Afternoon':{level:'Fount 2',room:'Fount2',time:'Afternoon'},
-  'Nursery Morning':{level:'Nursery',room:'Nursery',time:'Morning'},
-  'Nursery Afternoon':{level:'Nursery',room:'Nursery',time:'Afternoon'},
-  'Level1 Morning':{level:'Level 1 Book B',room:'L1',time:'Morning'},
-  'Level1 Afternoon':{level:'Level 1 Book B',room:'L1',time:'Afternoon'},
-  'Level2 Afternoon':{level:'Level 2',room:'L2',time:'Afternoon'}
-};
-
-function buildReportCard(s,rank,term,year,className,teacherName){
-  const info=classInfo[className]||{level:className,room:'—',time:'—'};
-  const now=new Date();
-  const todayKh=getKhmerDate(now);
-  const todayEn=now.toLocaleDateString('en-US',{day:'2-digit',month:'long',year:'numeric'});
-  const scores=s.scores||[];
-  const vals=scores.map(v=>(v!==null&&v!==undefined&&v!=='')?parseFloat(v):null);
-  const classCriteria=getCriteriaForClass(className);
-  const activeCount=classCriteria.length;
-  const activeVals=classCriteria.map(c=>vals[c.idx]).filter(v=>v!==null);
-  const activeTotal=activeVals.length?activeVals.reduce((a,b)=>a+b,0):0;
-  const activeAvg10=activeTotal/activeCount;
-  const overallG=rcGradeCalc(activeAvg10);
-  const isPassed=activeAvg10>=5;
-  const defAvatar=`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#94a3b8;font-size:9pt;flex-direction:column;">📷<br>Photo</div>`;
-  const gradingRows=[{l:'A',d:'Excellent',r:'90-100'},{l:'B',d:'Very Good',r:'80-89'},{l:'C',d:'Good',r:'70-79'},{l:'D',d:'Above Average',r:'60-69'},{l:'E',d:'Average',r:'50-59'},{l:'F',d:'Fail',r:'Below 50 Percent'}];
-  const gradHtml=gradingRows.map(g=>`<tr><td style="border:1px solid #000;padding:3px 5px;text-align:center;font-weight:700;">${g.l}</td><td style="border:1px solid #000;padding:3px 5px;">${g.d}</td><td style="border:1px solid #000;padding:3px 5px;text-align:center;">${g.r}</td></tr>`).join('');
-  let rowsHtml='';
-  classCriteria.forEach((c,ri)=>{
-    const v=vals[c.idx];
-    const g=(v!==null&&!isNaN(v))?rcGradeCalc(v):{letter:'',desc:'',color:'#334155'};
-    const pct=v!==null?v*10:null;
-    const pctDisp=pct!==null?pct.toFixed(1)+'%':'';
-    const res=v!==null?(v>=5?'<span style="color:#15803d;font-weight:700;">Pass</span>':'<span style="color:#be123c;font-weight:700;">Fail</span>'):'';
-    const bg=ri%2===0?'white':'#f8fafc';
-    rowsHtml+=`<tr style="background:${bg};"><td style="border:1px solid #000;padding:4px;text-align:center;">${ri+1}</td><td style="border:1px solid #000;padding:4px 4px 4px 8px;font-weight:600;">${c.name}</td><td style="border:1px solid #000;padding:4px;text-align:center;">10%</td><td style="border:1px solid #000;padding:4px;text-align:center;font-weight:600;">${v!==null?pctDisp:''}</td><td style="border:1px solid #000;padding:4px;text-align:center;color:${g.color};font-weight:700;">${g.letter}</td><td style="border:1px solid #000;padding:4px;text-align:center;"></td><td style="border:1px solid #000;padding:4px;text-align:center;">${v!==null?v.toFixed(2):''}</td><td style="border:1px solid #000;padding:4px;text-align:center;">${res}</td></tr>`;
-  });
-  const logoSrc = LOGO_B64 || 'https://i.ibb.co/RTWkghgd/Logo-Mikid-removebg-preview.png';
-  return `<div style="width:210mm;min-height:270mm;margin:0 auto;background:white;padding:6mm 8mm;box-sizing:border-box;page-break-after:always;font-family:'Times New Roman','Battambang',serif;display:flex;flex-direction:column;">
-    ${buildDocHeader(false)}
-    <div style="text-align:center;margin-bottom:3mm;">
-      <div style="font-size:18pt;font-weight:700;color:#be123c;font-family:'Playfair Display',serif;">Student Report Card</div>
-      <div style="font-size:12pt;font-weight:700;margin-top:1mm;font-family:'Playfair Display',serif;">Foundation to Primary English Program</div>
-      <div style="font-size:10.5pt;margin-top:1mm;color:#334155;">Academic Grade of ${term} ${year}</div>
-    </div>
-    <table style="width:100%;border-collapse:collapse;margin-bottom:3mm;"><tr>
-      <td style="vertical-align:top;padding-right:3mm;">
-        <table style="width:100%;border-collapse:collapse;font-size:10.5pt;">
-          <tr><td style="border:1px solid #000;padding:5px 8px;font-weight:700;background:#f1f5f9;width:34%;">Student</td><td style="border:1px solid #000;padding:5px 8px;font-weight:700;">${s.name}</td></tr>
-          <tr><td style="border:1px solid #000;padding:5px 8px;font-weight:700;background:#f1f5f9;">Gender</td><td style="border:1px solid #000;padding:5px 8px;">${s.sex}</td></tr>
-          <tr><td style="border:1px solid #000;padding:5px 8px;font-weight:700;background:#f1f5f9;">Level</td><td style="border:1px solid #000;padding:5px 8px;">${info.level}</td></tr>
-          <tr><td style="border:1px solid #000;padding:5px 8px;font-weight:700;background:#f1f5f9;">Room</td><td style="border:1px solid #000;padding:5px 8px;">${info.room}</td></tr>
-          <tr><td style="border:1px solid #000;padding:5px 8px;font-weight:700;background:#f1f5f9;">Teacher</td><td style="border:1px solid #000;padding:5px 8px;">${teacherName||'&nbsp;'}</td></tr>
-          <tr><td style="border:1px solid #000;padding:5px 8px;font-weight:700;background:#f1f5f9;">Time</td><td style="border:1px solid #000;padding:5px 8px;">${info.time}</td></tr>
-        </table>
-      </td>
-      <td style="width:35mm;vertical-align:top;">
-        <div style="width:35mm;height:45mm;border:2px solid #000;overflow:hidden;display:flex;align-items:center;justify-content:center;">
-          ${s.img?`<img src="${s.img}" style="width:100%;height:100%;object-fit:cover;">`:defAvatar}
-        </div>
-      </td>
-    </tr></table>
-    <table style="width:100%;border-collapse:collapse;"><tr>
-      <td style="vertical-align:top;padding-right:3mm;">
-        <table style="width:100%;border-collapse:collapse;font-size:10pt;"><thead>
-          <tr style="background:#1e3a8a;color:white;">
-            <th style="border:1px solid #000;padding:5px 3px;text-align:center;font-size:9pt;">No.</th>
-            <th style="border:1px solid #000;padding:5px 6px;text-align:left;font-size:9pt;">Criteria</th>
-            <th style="border:1px solid #000;padding:5px 3px;text-align:center;font-size:8.5pt;">Standard<br>Score %</th>
-            <th style="border:1px solid #000;padding:5px 3px;text-align:center;font-size:8.5pt;">Achievement<br>Score %</th>
-            <th style="border:1px solid #000;padding:5px 3px;text-align:center;font-size:9pt;">Grade</th>
-            <th style="border:1px solid #000;padding:5px 3px;text-align:center;font-size:9pt;">Rank</th>
-            <th style="border:1px solid #000;padding:5px 3px;text-align:center;font-size:8.5pt;">Total<br>Score</th>
-            <th style="border:1px solid #000;padding:5px 3px;text-align:center;font-size:9pt;">Result</th>
-          </tr></thead>
-          <tbody>${rowsHtml}
-          <tr style="background:#fef9c3;"><td colspan="2" style="border:1px solid #000;padding:5px 8px;font-weight:700;text-align:right;">Total</td><td style="border:1px solid #000;padding:5px;text-align:center;font-weight:700;">100%</td><td style="border:1px solid #000;padding:5px;text-align:center;font-weight:700;">${activeTotal.toFixed(2)}</td><td style="border:1px solid #000;padding:5px;text-align:center;font-weight:700;color:${overallG.color};">${overallG.letter}</td><td style="border:1px solid #000;padding:5px;text-align:center;font-weight:700;">${rank}</td><td style="border:1px solid #000;padding:5px;text-align:center;font-weight:700;">${(activeAvg10*10).toFixed(1)}%</td><td style="border:1px solid #000;padding:5px;text-align:center;font-weight:800;color:${isPassed?'#15803d':'#be123c'};">${isPassed?'Pass':'Fail'}</td></tr>
-          </tbody>
-        </table>
-      </td>
-      <td style="width:52mm;vertical-align:top;">
-        <table style="width:100%;border-collapse:collapse;font-size:9.5pt;"><thead>
-          <tr style="background:#1e3a8a;color:white;"><th colspan="3" style="border:1px solid #000;padding:5px;text-align:center;">Grading System %</th></tr>
-          <tr style="background:#e2e8f0;"><th style="border:1px solid #000;padding:4px;text-align:center;">Grade</th><th style="border:1px solid #000;padding:4px;">Description</th><th style="border:1px solid #000;padding:4px;text-align:center;">%</th></tr>
-        </thead><tbody>${gradHtml}</tbody></table>
-      </td>
-    </tr></table>
-    <table style="width:100%;margin-top:6mm;font-size:10pt;border-collapse:collapse;"><tr>
-      <td style="text-align:center;width:33%;"><div style="height:28px;"></div><div style="border-top:1px solid #000;padding-top:3px;font-family:'Battambang',sans-serif;">បានឃើញ និង ឯកភាព<br><strong>នាយកសាលាម៉ាយឃីដ</strong></div></td>
-      <td style="text-align:center;width:34%;"><div style="font-size:8.5pt;font-family:'Battambang',sans-serif;">${todayKh}</div><div style="font-size:8pt;">Phnom Penh, ${todayEn}</div><div style="border-top:1px solid #000;margin-top:8px;padding-top:3px;"><strong>Class Teacher / គ្រូប្រចាំថ្នាក់</strong></div></td>
-      <td style="text-align:center;width:33%;"><div style="height:28px;"></div><div style="border-top:1px solid #000;padding-top:3px;"><strong>Parent / អាណាព្យាបាល</strong></div></td>
-    </tr></table>
-    <div style="text-align:center;margin-top:auto;padding-top:3mm;font-size:7.5pt;color:#475569;border-top:1px solid #e2e8f0;font-family:'Battambang',sans-serif;">
-      អាសយដ្ឋាន : អគារលេខ ១៨-២០ ផ្លូវ២០០ R គីឡូម៉ែត្រលេខ៦ ឫស្សីកែវ ភ្នំពេញ &nbsp;|&nbsp; 078 315 188 &nbsp; 069 522 286 &nbsp; WWW.Mikidsschool.com
-    </div>
-  </div>`;
-}
-
+// ═══ BULK RC ═══
 function enGenerateReportCards(){
   if(!enSel.value)return alert('Please select a class first!');
   const term=document.getElementById('en-monthInput').value;
   const year=document.getElementById('en-yearInput').value;
   const teacherName=document.getElementById('en-teacherInput')?.value||'';
-  const className=enSel.value;
-  const students=[];
+  const className=enSel.value;const students=[];
   if(enMode==='sem'){
-    const rows=document.querySelectorAll('.en-sem-row');
-    if(!rows.length)return alert('Please select a class to load students.');
-    rows.forEach((r,i)=>{
-      const scores=Array.from(r.querySelectorAll('.en-sc')).map(x=>x.value.trim()===''?null:parseFloat(x.value));
-      const crit=getCriteriaForClass(className);
-      const activeVals=crit.map(c=>scores[c.idx]).filter(v=>v!==null);
-      const avg10=activeVals.length?(activeVals.reduce((a,b)=>a+b,0)/crit.length):0;
-      students.push({id:r.dataset.id,name:r.querySelector('.in-name').value,sex:r.dataset.sex==='M'?'Male':'Female',scores,avg10,img:document.getElementById('en-sem-img'+i)?.value||''});
-    });
+    const rows=document.querySelectorAll('.en-sem-row');if(!rows.length)return alert('Please select a class to load students.');
+    rows.forEach((r,i)=>{const scores=Array.from(r.querySelectorAll('.en-sc')).map(x=>x.value.trim()===''?null:parseFloat(x.value));const crit=getCriteriaForClass(className);const activeVals=crit.map(c=>scores[c.idx]).filter(v=>v!==null);const avgPct=activeVals.length?(activeVals.reduce((a,b)=>a+b,0)/crit.length):0;students.push({id:r.dataset.id,name:r.querySelector('.in-name').value,sex:r.dataset.sex==='M'?'Male':'Female',scores,avgPct,img:document.getElementById('en-sem-img'+i)?.value||''});});
   } else {
-    const rows=document.querySelectorAll('.en-row');
-    if(!rows.length)return alert('Please select a class to load students.');
-    rows.forEach((r,i)=>{
-      const scInputs=Array.from(r.querySelectorAll('.en-sc'));
-      const scores=scInputs.map(x=>{const v=x.value.trim();if(v==='')return null;const n=parseFloat(v);return isNaN(n)?null:n/10;});
-      const crit=getCriteriaForClass(enSel.value);
-      const activeVals=crit.map(c=>scores[c.idx]).filter(v=>v!==null);
-      const avg10=activeVals.length?(activeVals.reduce((a,b)=>a+b,0)/crit.length):0;
-      students.push({id:r.dataset.id,name:r.querySelector('.in-name').value,sex:r.dataset.sex==='M'?'Male':'Female',scores,avg10,img:document.getElementById('en-img'+i)?.value||''});
-    });
+    const rows=document.querySelectorAll('.en-row');if(!rows.length)return alert('Please select a class to load students.');
+    rows.forEach((r,i)=>{const scInputs=Array.from(r.querySelectorAll('.en-sc'));const scores=scInputs.map(x=>{const v=x.value.trim();if(v==='')return null;const n=parseFloat(v);return isNaN(n)?null:n;});const crit=getCriteriaForClass(enSel.value);const activeVals=crit.map(c=>scores[c.idx]).filter(v=>v!==null);const avgPct=activeVals.length?(activeVals.reduce((a,b)=>a+b,0)/crit.length):0;students.push({id:r.dataset.id,name:r.querySelector('.in-name').value,sex:r.dataset.sex==='M'?'Male':'Female',scores,avgPct,img:document.getElementById('en-img'+i)?.value||''});});
   }
   if(!students.length)return alert('No students found.');
-  const sorted=[...students].sort((a,b)=>b.avg10-a.avg10);
-  const rankMap={};
-  sorted.forEach((s,i)=>{let rank=i+1;if(i>0&&s.avg10===sorted[i-1].avg10)rank=rankMap[sorted[i-1].name];rankMap[s.name]=rank;});
+  const sorted=[...students].sort((a,b)=>b.avgPct-a.avgPct);
+  const rankMap={};sorted.forEach((s,i)=>{let rank=i+1;if(i>0&&s.avgPct===sorted[i-1].avgPct)rank=rankMap[sorted[i-1].name];rankMap[s.name]=rank;});
   let allCards='';students.forEach(s=>{allCards+=buildReportCard(s,rankMap[s.name]||1,term,year,className,teacherName);});
-  const rc=document.getElementById('en-rc-content');
-  rc.innerHTML=allCards;rc.style.display='block';
+  const rc=document.getElementById('en-rc-content');rc.innerHTML=allCards;rc.style.display='block';
   document.getElementById('en-pdf-content').style.display='none';
   document.getElementById('en-downloadBtn').style.display='none';
   document.getElementById('en-downloadRcBtn').style.display='block';
   rc.scrollIntoView({behavior:'smooth'});
 }
 
-// ═══════════════════════════════════════════════════
-// enDownloadRC — multi-page report cards PDF
-// ═══════════════════════════════════════════════════
 function enDownloadRC(){
   const container=document.getElementById('en-rc-content');
   if(!container||!container.innerHTML.trim()){alert('Please generate report cards first!');return;}
-  const btn=document.getElementById('en-downloadRcBtn');
-  const orig=btn.innerHTML;
-  btn.innerHTML='⏳ Generating...';btn.disabled=true;
+  const btn=document.getElementById('en-downloadRcBtn');const orig=btn.innerHTML;btn.innerHTML='⏳ Generating...';btn.disabled=true;
   const cards=Array.from(container.querySelectorAll('div[style*="page-break-after"]'));
   if(!cards.length){downloadPDF('en-rc-content','en-downloadRcBtn',enSel.value+'_RC',document.getElementById('en-monthInput').value);return;}
-  const{jsPDF}=window.jspdf;
-  const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
-  const A4W=210,A4H=297;
-  let pageIdx=0;
+  const{jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});
+  const A4W=210,A4H=297;let pageIdx=0;
   function renderCard(idx){
-    if(idx>=cards.length){
-      pdf.save('MiKids_'+enSel.value.replace(/\s+/g,'_')+'_ReportCards_'+document.getElementById('en-monthInput').value+'.pdf');
-      btn.innerHTML=orig;btn.disabled=false;return;
-    }
-    const card=cards[idx];
-    const wrap=document.createElement('div');
-    wrap.style.cssText='position:fixed;top:-9999px;left:0;width:794px;background:white;display:block;visibility:visible;opacity:1;z-index:-1;pointer-events:none;';
-    const clone=card.cloneNode(true);
-    clone.style.pageBreakAfter='auto';clone.style.width='794px';
-    if(LOGO_B64){
-      clone.querySelectorAll('img').forEach(img=>{
-        if(img.src&&img.src.includes('ibb.co'))img.src=LOGO_B64;
-      });
-    }
+    if(idx>=cards.length){pdf.save('MiKids_'+enSel.value.replace(/\s+/g,'_')+'_ReportCards_'+document.getElementById('en-monthInput').value+'.pdf');btn.innerHTML=orig;btn.disabled=false;return;}
+    const wrap=document.createElement('div');wrap.style.cssText='position:fixed;top:-9999px;left:0;width:794px;background:white;display:block;visibility:visible;opacity:1;z-index:-1;pointer-events:none;';
+    const clone=cards[idx].cloneNode(true);clone.style.pageBreakAfter='auto';clone.style.width='794px';
+    if(LOGO_B64){clone.querySelectorAll('img').forEach(img=>{if(img.src&&img.src.includes('ibb.co'))img.src=LOGO_B64;});}
     wrap.appendChild(clone);document.body.appendChild(wrap);
-    const imgs=Array.from(wrap.querySelectorAll('img'));
-    let loaded=0;
+    const imgs=Array.from(wrap.querySelectorAll('img'));let loaded=0;
     const proceed=()=>{
       if(loaded<imgs.length)return;
       setTimeout(()=>{
-        html2canvas(wrap,{
-          scale:1.5,
-          useCORS:true,
-          allowTaint:true,
-          backgroundColor:'#ffffff',
-          logging:false,
-          width:794,
-          windowWidth:794,
-          imageTimeout:8000
-        }).then(canvas=>{
-          document.body.removeChild(wrap);
-          const mpp=A4W/canvas.width;
-          const imgH=canvas.height*mpp;
+        html2canvas(wrap,{scale:1.5,useCORS:true,allowTaint:true,backgroundColor:'#ffffff',logging:false,width:794,windowWidth:794,imageTimeout:8000}).then(canvas=>{
+          document.body.removeChild(wrap);const mpp=A4W/canvas.width;const imgH=canvas.height*mpp;
           if(pageIdx>0)pdf.addPage();
-          if(imgH<=A4H+2){
-            const safeH=Math.max(1,+(imgH.toFixed(2)));
-            pdf.addImage(canvas.toDataURL('image/jpeg',.92),'JPEG',0,0,A4W,safeH);
-          } else {
-            let yRC=0,firstRC=true;
-            while(yRC<canvas.height){
-              if(!firstRC)pdf.addPage();firstRC=false;
-              const slH=Math.min(Math.round(A4H/mpp),canvas.height-yRC);
-              if(slH<=0)break;
-              const scC=document.createElement('canvas');
-              scC.width=canvas.width;scC.height=slH;
-              scC.getContext('2d').drawImage(canvas,0,yRC,canvas.width,slH,0,0,canvas.width,slH);
-              const pImgH=Math.max(1,+(slH*mpp).toFixed(2));
-              pdf.addImage(scC.toDataURL('image/jpeg',.92),'JPEG',0,0,A4W,pImgH);
-              yRC+=slH;
-            }
-          }
+          if(imgH<=A4H+2){pdf.addImage(canvas.toDataURL('image/jpeg',.92),'JPEG',0,0,A4W,Math.max(1,+(imgH.toFixed(2))));}
+          else{let yRC=0,firstRC=true;while(yRC<canvas.height){if(!firstRC)pdf.addPage();firstRC=false;const slH=Math.min(Math.round(A4H/mpp),canvas.height-yRC);if(slH<=0)break;const scC=document.createElement('canvas');scC.width=canvas.width;scC.height=slH;scC.getContext('2d').drawImage(canvas,0,yRC,canvas.width,slH,0,0,canvas.width,slH);pdf.addImage(scC.toDataURL('image/jpeg',.92),'JPEG',0,0,A4W,Math.max(1,+(slH*mpp).toFixed(2)));yRC+=slH;}}
           pageIdx++;renderCard(idx+1);
-        }).catch(err=>{
-          if(document.body.contains(wrap))document.body.removeChild(wrap);
-          console.error('Card render error:',err);pageIdx++;renderCard(idx+1);
-        });
+        }).catch(err=>{if(document.body.contains(wrap))document.body.removeChild(wrap);console.error(err);pageIdx++;renderCard(idx+1);});
       },150);
     };
     if(!imgs.length){setTimeout(proceed,200);return;}
-    imgs.forEach(img=>{
-      if(img.complete&&img.naturalWidth>0){loaded++;proceed();}
-      else{img.onload=()=>{loaded++;proceed();};img.onerror=()=>{loaded++;proceed();};}
-    });
+    imgs.forEach(img=>{if(img.complete&&img.naturalWidth>0){loaded++;proceed();}else{img.onload=()=>{loaded++;proceed();};img.onerror=()=>{loaded++;proceed();};}});
     setTimeout(()=>{if(loaded<imgs.length){loaded=imgs.length;proceed();}},4000);
   }
   renderCard(0);
 }
 
-// Close modal on outside click
 document.getElementById('rc-modal').addEventListener('click',function(e){if(e.target===this)rcCloseModal();});
 </script>
 </body>
