@@ -617,7 +617,7 @@ function rcUpdateLive(){
 // ═══════════════════════════════════════════════════
 // getKhmerDate — hardcoded lookup table approach
 // Reference anchor (verified by user):
-//   May 1, 2026 (Friday) = ថ្ងៃសុក្រ ១៥កើត ខែពិសាខ ឆ្នាំមមី អដ្ឋស័ក ព.ស២៥៦៩
+//   May 1, 2026 (Friday) = ថ្ងៃសុក្រ១៥កើតខែពិសាខឆ្នាំមមី អដ្ឋស័ក ព.ស២៥៦៩
 // Anchor JDN for May 1 2026 = 2461163
 // Anchor new moon start of Visak month = JDN 2461149 (April 17 2026 = day 1 kert Visak)
 // So May 1 2026 = day 15 kert Visak ✓  (2461163 - 2461149 + 1 = 15)
@@ -693,7 +693,7 @@ function getKhmerDate(date){
 function buildDocHeader(isKh){
   const logoImg=LOGO_B64
     ?`<img src="${LOGO_B64}" style="height:150px;width:auto;object-fit:contain;display:block;" alt="MiKids">`
-    :`<div style="font-family:'Arial Black',sans-serif;font-size:9pt;font-weight:900;color:#1e3a8a;">MiKids</div>`;
+    :`<div style="font-family:'Arial Black',sans-serif;font-size:9pt;font-weight:150;color:#1e3a8a;">MiKids</div>`;
 
   const nationKh=`
     <div style="text-align:center;">
