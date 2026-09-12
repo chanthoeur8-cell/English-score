@@ -7,6 +7,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Moul&family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
 :root{
   --navy:#1e3a8a;--red:#be123c;--gold:#f59e0b;--blue:#2563eb;
@@ -125,6 +127,7 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
     <div>
       <div class="app-title">MiKids International School</div>
       <div class="app-subtitle">Student Score Management System · ប្រព័ន្ធគ្រប់គ្រងពិន្ទុសិស្ស</div>
+      <div id="sync-status" style="font-size:8.5pt;color:#93c5fd;margin-top:3px;min-height:12px;"></div>
     </div>
   </div>
   <div class="tab-bar">
@@ -353,6 +356,27 @@ table.score-tbl{min-width:100%;border-collapse:collapse;font-size:8pt;}
 </div>
 
 <script>
+// ═══════════════════════════════════════════════════════════════
+// ⚙️ FIREBASE CONFIG — សូមដូរតម្លៃទាំង៧ខាងក្រោមនេះជាទិន្នន័យពិត
+// ដែលអ្នកបានពី Firebase Console > Project Settings > Your apps > Web app (</>)
+// ដោយមិនប៉ះពាល់អ្វីផ្សេងទៀតក្នុងកូដទេ។
+// ═══════════════════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyAGV91anRpXy2pjOMzlIsbT7GDXEqbX4BY",
+  authDomain: "english-scores-6f55c.firebaseapp.com",
+  databaseURL: "https://english-scores-6f55c-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "english-scores-6f55c",
+  storageBucket: "english-scores-6f55c.firebasestorage.app",
+  messagingSenderId: "930105652371",
+  appId: "1:930105652371:web:d16b6e491aa6e4bc2c0966",
+  measurementId: "G-9TWZ6VHF1V"
+};
+let fbDb=null;
+try{
+  firebase.initializeApp(firebaseConfig);
+  fbDb=firebase.database();
+}catch(e){console.error('Firebase init failed — សូមពិនិត្យ firebaseConfig ខាងលើ',e);}
+
 let LOGO_B64='';
 (function preloadLogo(){
   const img=new Image();img.crossOrigin='anonymous';
@@ -455,16 +479,47 @@ function updateEnRanks(rows){
   });
 }
 
-// ═══ LOCAL STORAGE ═══
+// ═══ CLOUD STORAGE (shared across every computer / browser that opens this artifact) ═══
+let cloudSaveTimers={};
+function showSyncStatus(state){
+  const el=document.getElementById('sync-status');if(!el)return;
+  if(state==='saving'){el.textContent='💾 កំពុងរក្សាទុក...';el.style.color='#fde68a';}
+  else if(state==='saved'){el.textContent='✅ បានរក្សាទុករួច (គ្រប់ Computer ឃើញដូចគ្នា)';el.style.color='#86efac';clearTimeout(el._t);el._t=setTimeout(()=>{if(el.textContent.indexOf('បានរក្សាទុក')===0||el.textContent.indexOf('✅')===0)el.textContent='';},2500);}
+  else if(state==='loading'){el.textContent='🔄 កំពុងទាញយកទិន្នន័យ...';el.style.color='#93c5fd';}
+  else if(state==='error'){el.textContent='⚠️ បញ្ហាការតភ្ជាប់ទិន្នន័យ — សូមព្យាយាមម្តងទៀត';el.style.color='#fca5a5';}
+  else{el.textContent='';}
+}
+async function cloudSave(key,valueObj){
+  if(!fbDb){showSyncStatus('error');return;}
+  try{ await fbDb.ref('mikids/'+key).set(valueObj); showSyncStatus('saved'); }
+  catch(e){ console.error('Cloud save failed',key,e); showSyncStatus('error'); }
+}
+function cloudSaveDebounced(key,valueObj,delay=800){
+  if(!key)return;
+  showSyncStatus('saving');
+  if(cloudSaveTimers[key])clearTimeout(cloudSaveTimers[key]);
+  cloudSaveTimers[key]=setTimeout(()=>cloudSave(key,valueObj),delay);
+}
+async function cloudLoad(key){
+  if(!key||!fbDb)return null;
+  try{ const snap=await fbDb.ref('mikids/'+key).once('value'); return snap.exists()?snap.val():null; }
+  catch(e){ console.error('Cloud load failed',key,e); return null; }
+}
+
+// ═══ SAVE/LOAD (backed by cloud storage) ═══
 function lsKey(tab,mode,cls){return 'mikids_'+tab+'_'+mode+'_'+cls;}
 function saveData(tab,mode,cls){
+  if(!cls)return;
   const sel=tab==='kh'?(mode==='month'?'.kh-row':'.kh-sem-row'):(mode==='month'?'.en-row':'.en-sem-row');
   const data=Array.from(document.querySelectorAll(sel)).map(r=>({scores:Array.from(r.querySelectorAll('.sc')).map(x=>x.value),name:r.querySelector('.in-name')?.value||''}));
   const meta={month:document.getElementById(tab==='kh'?'kh-monthInput':'en-monthInput')?.value||'',year:document.getElementById(tab==='kh'?'kh-yearInput':'en-yearInput')?.value||''};
-  try{localStorage.setItem(lsKey(tab,mode,cls),JSON.stringify({data,meta}));}catch(e){}
+  cloudSaveDebounced(lsKey(tab,mode,cls),{data,meta});
 }
-function loadData(tab,mode,cls){
-  let saved;try{saved=JSON.parse(localStorage.getItem(lsKey(tab,mode,cls)));}catch(e){}
+async function loadData(tab,mode,cls){
+  if(!cls)return;
+  showSyncStatus('loading');
+  const saved=await cloudLoad(lsKey(tab,mode,cls));
+  showSyncStatus(saved?'saved':'');
   if(!saved)return;
   if(saved.meta){
     const mEl=document.getElementById(tab==='kh'?'kh-monthInput':'en-monthInput');
@@ -494,9 +549,11 @@ function attachAutoSave(tab,mode,cls){
     });
   });
 }
-function clearAllData(){
-  if(!confirm('តើអ្នកពិតជាចង់លុបទិន្នន័យទាំងអស់មែនទេ?'))return;
-  Object.keys(localStorage).filter(k=>k.startsWith('mikids_')).forEach(k=>localStorage.removeItem(k));
+async function clearAllData(){
+  if(!confirm('តើអ្នកពិតជាចង់លុបទិន្នន័យទាំងអស់មែនទេ? (ទិន្នន័យនេះនឹងលុបចេញពីគ្រប់ Computer ទាំងអស់)'))return;
+  try{
+    if(fbDb) await fbDb.ref('mikids').remove();
+  }catch(e){console.error(e);}
   alert('បានលុបទិន្នន័យទាំងអស់!');location.reload();
 }
 // ═══ STUDENT DB ═══
@@ -559,28 +616,31 @@ khSel.add(new Option('-- ជ្រើសរើសថ្នាក់ --',''));
 Object.keys(khStudentDB).forEach(c=>khSel.add(new Option(c,c)));
 function khOnClassChange(){khMode==='month'?khLoadMonthly():khLoadSemester();}
 const scTd=(cls='')=>`<td><input type="number" class="sc-inp sc ${cls}" min="0" max="10" step="0.01" placeholder=""></td>`;
-function khLoadMonthly(){
+async function khLoadMonthly(){
   const tbody=document.getElementById('kh-monthBody');tbody.innerHTML='';
   (khStudentDB[khSel.value]||[]).forEach((s,i)=>{
     tbody.innerHTML+=`<tr class="kh-row" data-id="${s.id}" data-sex="${s.sex}"><td><b>${s.id}</b></td><td><input type="text" value="${s.name}" class="in-name"></td><td>${s.sex}</td>${scTd('km').repeat(4)+scTd('math')+scTd('sci')+scTd('soc').repeat(4)+scTd('phy').repeat(2)+scTd('comp')+scTd('ak')+scTd('val')+scTd('cn')}<td><input type="number" class="sc-inp sc inp-hw" min="0" max="10" step="0.01" placeholder=""></td><td style="text-align:center;"><input type="file" accept="image/*" onchange="previewImg(event,'kh-img${i}')" style="width:80px;display:block;margin:0 auto;font-size:7pt;"><input type="hidden" id="kh-img${i}"></td></tr>`;
   });
-  loadData('kh','month',khSel.value);attachAutoSave('kh','month',khSel.value);
+  if(!khSel.value)return;
+  await loadData('kh','month',khSel.value);attachAutoSave('kh','month',khSel.value);
 }
-function khLoadSemester(){
+async function khLoadSemester(){
   const tbody=document.getElementById('kh-semBody');tbody.innerHTML='';
   (khStudentDB[khSel.value]||[]).forEach((s,i)=>{
     tbody.innerHTML+=`<tr class="kh-sem-row" data-id="${s.id}" data-sex="${s.sex}"><td><b>${s.id}</b></td><td><input type="text" value="${s.name}" class="in-name"></td><td>${s.sex}</td>${scTd('kh-ex sc').repeat(15)}<td class="calc-cell kh-exam-avg">—</td><td><input type="number" class="sc-inp sc kh-mn inp-mn" min="0" max="10" step="0.01" placeholder=""></td><td class="calc-cell kh-sem-avg">—</td><td class="rank-cell kh-rank">—</td><td style="text-align:center;"><input type="file" accept="image/*" onchange="previewImg(event,'kh-sem-img${i}')" style="width:80px;display:block;margin:0 auto;font-size:7pt;"><input type="hidden" id="kh-sem-img${i}"></td></tr>`;
   });
-  loadData('kh','sem',khSel.value);attachAutoSave('kh','sem',khSel.value);
+  if(!khSel.value)return;
+  await loadData('kh','sem',khSel.value);attachAutoSave('kh','sem',khSel.value);
 }
 const enSel=document.getElementById('en-classSelect');
 function enOnClassChange(){enMode==='month'?enLoadMonthly():enLoadSemester();}
-function enLoadMonthly(){
+async function enLoadMonthly(){
   const tbody=document.getElementById('en-monthBody');tbody.innerHTML='';
   (enStudentDB[enSel.value]||[]).forEach((s,i)=>{
     tbody.innerHTML+=`<tr class="en-row" data-id="${s.id}" data-sex="${s.sex}" data-idx="${i}"><td><b>${s.id}</b></td><td><input class="in-name" type="text" value="${s.name}"></td><td>${s.sex}</td>${RC_CRITERIA.map(()=>`<td><input type="number" class="sc-inp sc en-sc" min="0" max="100" step="0.1" placeholder="" style="width:48px;"></td>`).join('')}<td style="text-align:center;"><input type="file" accept="image/*" onchange="previewImg(event,'en-img${i}')" style="width:80px;display:block;margin:0 auto;font-size:7pt;"><input type="hidden" id="en-img${i}"></td></tr>`;
   });
-  loadData('en','month',enSel.value);attachAutoSave('en','month',enSel.value);
+  if(!enSel.value)return;
+  await loadData('en','month',enSel.value);attachAutoSave('en','month',enSel.value);
 }
 const EN_CRITERIA=["Attendance","Homework","Quiz","Assignment","Art","Mix Skills","Listening","Speaking","Life Skills","Chinese"];
 function getCriteriaForClass(className){
@@ -590,15 +650,23 @@ function getCriteriaForClass(className){
   if(isNursery){base[2].name='Quiz&Assignment';base[9].name='Numeracy';base[3].name='Science';base[5].name='Literacy';}
   return base;
 }
-function enLoadSemester(){
+async function enLoadSemester(){
   const tbody=document.getElementById('en-semBody');tbody.innerHTML='';
-  (enStudentDB[enSel.value]||[]).forEach((s,i)=>{
+  const cls=enSel.value;
+  (enStudentDB[cls]||[]).forEach((s,i)=>{
     const scCells=EN_CRITERIA.map(()=>`<td><input type="number" class="sc-inp en-sc" min="0" max="100" step="0.1" placeholder="" style="width:46px;"></td>`).join('');
     tbody.innerHTML+=`<tr class="en-sem-row" data-id="${s.id}" data-sex="${s.sex}"><td><b>${s.id}</b></td><td><input class="in-name" type="text" value="${s.name}"></td><td>${s.sex==='M'?'M':'F'}</td>${scCells}<td class="calc-cell en-total">—</td><td class="avg-cell en-avg">—</td><td class="grade-cell en-grade" style="color:#94a3b8;">—</td><td class="rank-cell en-rank">—</td><td style="text-align:center;"><input type="file" accept="image/*" onchange="previewImg(event,'en-sem-img${i}')" style="width:80px;display:block;margin:0 auto;font-size:7pt;"><input type="hidden" id="en-sem-img${i}"></td></tr>`;
   });
   const allRows=document.querySelectorAll('.en-sem-row');
-  allRows.forEach(r=>{r.querySelectorAll('.en-sc,.in-name').forEach(inp=>{inp.addEventListener('input',()=>{const data=Array.from(allRows).map(row=>({scores:Array.from(row.querySelectorAll('.en-sc')).map(x=>x.value),name:row.querySelector('.in-name')?.value||''}));try{localStorage.setItem('mikids_en_sem_'+enSel.value,JSON.stringify({data}));}catch(e){}updateEnSemRow(r,allRows);});});});
-  let saved;try{saved=JSON.parse(localStorage.getItem('mikids_en_sem_'+enSel.value));}catch(e){}
+  allRows.forEach(r=>{r.querySelectorAll('.en-sc,.in-name').forEach(inp=>{inp.addEventListener('input',()=>{
+    const data=Array.from(allRows).map(row=>({scores:Array.from(row.querySelectorAll('.en-sc')).map(x=>x.value),name:row.querySelector('.in-name')?.value||''}));
+    if(cls)cloudSaveDebounced('mikids_en_sem_'+cls,{data});
+    updateEnSemRow(r,allRows);
+  });});});
+  if(!cls)return;
+  showSyncStatus('loading');
+  const saved=await cloudLoad('mikids_en_sem_'+cls);
+  showSyncStatus(saved?'saved':'');
   if(saved?.data){allRows.forEach((r,i)=>{if(!saved.data[i])return;Array.from(r.querySelectorAll('.en-sc')).forEach((inp,j)=>{if(saved.data[i].scores?.[j]!==undefined)inp.value=saved.data[i].scores[j];});const nEl=r.querySelector('.in-name');if(nEl&&saved.data[i].name)nEl.value=saved.data[i].name;});allRows.forEach(r=>updateEnSemRow(r,null));updateEnRanks(allRows);}
 }
 function previewImg(e,id){const r=new FileReader();r.onload=f=>{const el=document.getElementById(id);if(el)el.value=f.target.result;};r.readAsDataURL(e.target.files[0]);}
